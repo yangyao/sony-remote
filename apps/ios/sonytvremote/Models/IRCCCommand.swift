@@ -74,7 +74,7 @@ enum IRCCCommand: String, CaseIterable {
     case netflix        = "AAAAAgAAABoAAAB8Aw=="
     case youtube        = "AAAAAgAAAMQAAABHAw=="
     case prime          = "AAAAAgAAAMQAAAB5Aw=="
-    
+
     // Maps to the command name returned by getRemoteControllerInfo
     var tvName: String {
         switch self {

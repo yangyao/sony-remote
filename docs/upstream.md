@@ -7,7 +7,7 @@
 - 授權：Apache-2.0，完整原文保留於 `apps/ios/LICENSE`。
 - 上游 README 保留於 `apps/ios/UPSTREAM_README.md`；該文件描述上游，未必代表已驗證功能。
 
-本次修改：將工程置於 apps/ios，移除開發者個人 xcuserdata，清除上游簽名 Team，Bundle Identifier 改為 com.yangyao.sonyremote 系列。新增區網權限說明與本機 HTTP 的 ATS 設定。
+本次修改：將工程置於 apps/ios，移除開發者個人 xcuserdata，清除上游簽名 Team，Bundle Identifier 改為 com.yangyao.sonyremote 系列。新增區網權限說明與本機 HTTP 的 ATS 設定，清理行尾空白。
 
 ## 已知限制
 

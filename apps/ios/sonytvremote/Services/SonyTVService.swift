@@ -31,7 +31,7 @@ enum TVError: LocalizedError {
 
 actor SonyTVService {
     static let shared = SonyTVService()
-    
+
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.app", category: "SonyTVService")
 
     private var tvIP: String = ""
@@ -79,12 +79,12 @@ actor SonyTVService {
 
     func syncRemoteCodes() async {
         logger.info("Syncing remote codes from TV")
-        guard let codes = try? await getRemoteControllerInfo() else { 
+        guard let codes = try? await getRemoteControllerInfo() else {
             logger.warning("Failed to fetch remote codes from TV")
-            return 
+            return
         }
         logger.info("📺 Fetched \(codes.count, privacy: .public) remote codes from TV")
-        
+
         // Log ALL codes for diagnostic purposes
         let sortedCodes = codes.sorted { $0.name < $1.name }
         for entry in sortedCodes {
@@ -100,8 +100,8 @@ actor SonyTVService {
         let tvCodeFromAlias = alias.flatMap { tvRemoteCodes[$0] }
         let tvCode = tvCodeFromCanonical ?? tvCodeFromAlias
         let chosen = tvCode ?? command.rawValue
-        
-        let source = tvCodeFromCanonical != nil ? "canonical(\(command.tvName))" : 
+
+        let source = tvCodeFromCanonical != nil ? "canonical(\(command.tvName))" :
                      tvCodeFromAlias != nil ? "alias(\(alias ?? ""))" : "hardcoded"
         logger.debug("Sending IRCC for '\(command.tvName)' - source: \(source), code: \(chosen)")
 
@@ -408,4 +408,3 @@ actor SonyTVService {
         return url
     }
 }
-

@@ -119,14 +119,14 @@ class RemoteViewModel: ObservableObject {
 
     // MARK: - Volume
 
-    func volumeUp() async { 
+    func volumeUp() async {
         logger.info("Volume UP pressed")
-        await sendCommand(.volumeUp) 
+        await sendCommand(.volumeUp)
     }
-    
-    func volumeDown() async { 
+
+    func volumeDown() async {
         logger.info("Volume DOWN pressed")
-        await sendCommand(.volumeDown) 
+        await sendCommand(.volumeDown)
     }
 
     func setVolume(_ value: Int) async {

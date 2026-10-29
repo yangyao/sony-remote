@@ -4,7 +4,7 @@ import OSLog
 struct ContentView: View {
     @StateObject private var vm = RemoteViewModel()
     @State private var selectedTab = 0
-    
+
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.app", category: "ContentView")
 
     var body: some View {
