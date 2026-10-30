@@ -39,4 +39,17 @@
 
 使用者提供電視型號後，安裝 iPhone 真機測試；依電視回報能力校正指令與認證方式。
 
+
+## 精簡個人設定（後續更新）
+
+- 新視覺依據：使用者要求只保留地址、預設 `192.0.2.1`，移除教學與兩個測試入口。
+- 改前：`docs/screenshots/qa-before-settings.png`；改後：`docs/screenshots/iphone-settings.png`。已開啟最終截圖確認 IP 完整可讀、「連接」可用、進階設定預設收合。
+- 設定改為 320 pt 小面板，可展開；保留固定「完成」入口，表單頂部預留安全間距，避免首列被標題覆蓋。
+- 預設地址用於新安裝及舊空白設定的升級，保留已有的自訂地址與 PSK。新增單元測試驗證此遷移行為。
+- `/tmp/sony-simple-settings.xcresult`：4 個服務／設定單元測試及設定 UI 測試通過。
+- `/tmp/sony-simple-settings-final.xcresult`：最終小面板 UI 測試通過，確認 IP 顯示、「連接」啟用、教學／測試入口移除及關閉面板。
+- 真機版簽名編譯通過，已更新並成功啟動於使用者的 iPhone 15。
+- 讀取電視 `getPowerStatus` 成功回傳 HTTP 200 / standby；這項查詢無需 PSK。尚未驗證實體遙控按鍵或待機喚醒。
+- 字體、深色配色與主畫面保持一致；最終小面板沒有可處理的 P0/P1/P2 視覺問題。
+
 final result: passed

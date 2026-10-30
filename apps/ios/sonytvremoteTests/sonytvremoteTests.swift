@@ -4,6 +4,18 @@ import Testing
 
 @MainActor
 struct SonyServiceTests {
+    @Test func defaultAddressMigratesEmptySettingsAndPreservesCustomAddress() {
+        let defaults = UserDefaults(suiteName: "sony-settings-tests-\(UUID())")!
+        TVConnectionSettings.prepare(in: defaults)
+        #expect(defaults.string(forKey: "tv_ip") == "192.0.2.1")
+        defaults.set("", forKey: "tv_ip")
+        TVConnectionSettings.prepare(in: defaults)
+        #expect(defaults.string(forKey: "tv_ip") == "192.0.2.1")
+        defaults.set("192.0.2.10", forKey: "tv_ip")
+        TVConnectionSettings.prepare(in: defaults)
+        #expect(defaults.string(forKey: "tv_ip") == "192.0.2.10")
+    }
+
     @Test func decodesMixedRemoteControllerResponse() {
         let response: [String: Any] = ["result": [
             ["bundled": true, "type": "IR_REMOTE_BUNDLE_TYPE_A"],

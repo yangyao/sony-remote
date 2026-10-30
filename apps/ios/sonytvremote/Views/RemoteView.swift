@@ -3,7 +3,7 @@ import SwiftUI
 struct RemoteView: View {
     @EnvironmentObject var vm: RemoteViewModel
     @AppStorage("tv_name") private var tvName = "Sony BRAVIA"
-    @AppStorage("tv_ip") private var tvIP = ""
+    @AppStorage("tv_ip") private var tvIP = TVConnectionSettings.defaultIP
     @State private var sheet: RemoteSheet?
 
     private enum RemoteSheet: String, Identifiable {
@@ -78,6 +78,7 @@ struct RemoteView: View {
             .environmentObject(vm)
             .preferredColorScheme(.dark)
             .tint(.white)
+            .presentationDetents(destination == .settings ? [.height(320), .large] : [.large])
             .presentationDragIndicator(.visible)
         }
     }

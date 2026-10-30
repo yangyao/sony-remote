@@ -5,7 +5,7 @@ final class RemoteUITests: XCTestCase {
     func testRemoteAndConnectionFlow() throws {
         continueAfterFailure = false
         let app = XCUIApplication()
-        app.launchArguments = ["-tv_ip", "", "-tv_name", "Sony BRAVIA", "-AppleLanguages", "(zh-Hant)"]
+        app.launchArguments = ["-tv_ip", "192.0.2.1", "-tv_name", "Sony BRAVIA", "-AppleLanguages", "(zh-Hant)"]
         app.launch()
         XCTAssertTrue(app.buttons["電視連線設定"].waitForExistence(timeout: 15))
         XCTAssertTrue(app.buttons["提高電視音量"].exists)
@@ -13,10 +13,6 @@ final class RemoteUITests: XCTestCase {
         XCTAssertTrue(app.buttons["確認"].exists)
         XCTAssertFalse(app.tabBars.firstMatch.exists)
         capture("iphone-remote", app)
-
-        app.buttons["提高電視音量"].tap()
-        XCTAssertTrue(app.staticTexts["請點上方電視名稱，設定電視 IP 與連線金鑰。"].waitForExistence(timeout: 5))
-        app.buttons["關閉提示"].tap()
 
         app.buttons["電視連線設定"].tap()
         XCTAssertTrue(app.textFields["tv-ip"].waitForExistence(timeout: 5))
@@ -38,6 +34,27 @@ final class RemoteUITests: XCTestCase {
         XCTAssertTrue(app.buttons["1"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["9"].exists)
         capture("iphone-more", app)
+        app.buttons["完成"].tap()
+        XCTAssertTrue(app.buttons["確認"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    func testSimplifiedSettings() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-tv_ip", "192.0.2.1", "-AppleLanguages", "(zh-Hant)"]
+        app.launch()
+        XCTAssertTrue(app.buttons["電視連線設定"].waitForExistence(timeout: 15))
+        app.buttons["電視連線設定"].tap()
+        let address = app.textFields["tv-ip"]
+        XCTAssertTrue(address.waitForExistence(timeout: 5))
+        XCTAssertEqual(address.value as? String, "192.0.2.1")
+        XCTAssertTrue(app.buttons["連接"].exists)
+        XCTAssertTrue(app.buttons["連接"].isEnabled)
+        XCTAssertFalse(app.staticTexts["如何連接"].exists)
+        XCTAssertFalse(app.buttons["測試首頁按鍵"].exists)
+        XCTAssertFalse(app.buttons["測試連線"].exists)
+        XCTAssertFalse(app.secureTextFields["tv-psk"].exists)
+        capture("iphone-settings", app)
         app.buttons["完成"].tap()
         XCTAssertTrue(app.buttons["確認"].waitForExistence(timeout: 5))
     }
