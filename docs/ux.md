@@ -22,3 +22,7 @@
 Sony IRCC 通常發送離散按鍵，滑動需轉成方向指令，不能直接假設有 Apple TV 的連續觸控體驗。
 文字輸入、長按、喚醒與 App 啟動須逐項驗證機型支援。
 Apple TV 的 Siri／語音功能不視為 Sony 第一版需求。
+
+## 選定的 Mac 視覺參考
+
+使用者選定 DM TV Remote 作為較接近期望的 Mac 版參考；已保存[圖片與實作筆記](references/dm-tv-remote/README.md)。Mac 版優先參考其縱向布局、控制分組與音量膠囊；iPhone 仍以內建 Apple TV Remote 為準。
