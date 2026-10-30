@@ -152,15 +152,33 @@ actor SonyTVService {
         request.setValue("SonyRemote/1.0", forHTTPHeaderField: "User-Agent")
         // Sony requires this capability entry to show the device-registration PIN dialog.
         // This is a registration request, not a change to the TV's authentication settings.
+        #if os(macOS)
+        let nickname = "Sony Remote Mac"
+        #else
+        let nickname = "Sony Remote"
+        #endif
         let body: [String: Any] = ["method": "actRegister", "id": 1, "version": "1.0",
-            "params": [["clientid": clientID, "nickname": "Sony Remote", "level": "private"],
+            "params": [["clientid": clientID, "nickname": nickname, "level": "private"],
                        [["value": "yes", "function": "WOL"]]] as [Any]]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
         if let pin {
             request.setValue("Basic " + Data(":\(pin)".utf8).base64EncodedString(),
                              forHTTPHeaderField: "Authorization")
         }
-        let (data, response) = try await session.data(for: request)
+        let delegate = TVAuthenticationDelegate()
+        let pairingSession = URLSession(configuration: session.configuration, delegate: delegate, delegateQueue: nil)
+        defer { pairingSession.finishTasksAndInvalidate() }
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await pairingSession.data(for: request)
+        } catch {
+            // Cancelling this specific Basic challenge preserves the TV's PIN dialog.
+            // Ordinary task cancellation and network errors must still propagate.
+            guard delegate.receivedBasicChallenge else { throw error }
+            if pin == nil { return .pinRequired }
+            throw TVError.invalidPIN
+        }
         guard let http = response as? HTTPURLResponse else {
             throw TVError.invalidResponse("No pairing response")
         }
@@ -530,5 +548,29 @@ actor SonyTVService {
             throw TVError.networkError("Invalid URL: \(tvIP)\(path)")
         }
         return url
+    }
+}
+
+/// Sony uses the initial HTTP 401 to display a PIN. CFNetwork must not silently
+/// retry that challenge: another registration request can dismiss the TV dialog.
+private final class TVAuthenticationDelegate: NSObject, URLSessionTaskDelegate, @unchecked Sendable {
+    private let lock = NSLock()
+    private var challenged = false
+    var receivedBasicChallenge: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return challenged
+    }
+    func urlSession(_ session: URLSession, task: URLSessionTask,
+                    didReceive challenge: URLAuthenticationChallenge,
+                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic {
+            lock.lock()
+            challenged = true
+            lock.unlock()
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        } else {
+            completionHandler(.performDefaultHandling, nil)
+        }
     }
 }

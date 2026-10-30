@@ -103,3 +103,17 @@ final result: passed
 - Installed the final build and relaunched it: main remote appeared without another pairing prompt, with active power status. Credentials persist in the iPhone Keychain; PIN is not stored.
 - Final simulator run passed: 5 unit tests and 2 UI tests. Covers incorrect PIN, credential persistence, REST/IRCC authorization, host isolation, and canonical registration capabilities. Signed device build passed.
 - Main layout unchanged. Updated main screenshot contains no pairing code or TV content.
+
+
+## macOS implementation — 2026-10-30
+
+- Implemented a signed macOS 26+ SwiftUI app with an embedded WidgetKit ControlWidgetButton. The single Sony Remote control opens the full app; no standalone power control.
+- Installed at `~/Applications/SonyRemote.app`; added its button to the user's Control Center through Edit Controls.
+- Verified actual Control Center activation both when the app was not running and after its window had been closed. The retained AppKit window hosts SwiftUI content and restores correctly; explicit dark appearance preserves icon/text contrast after reopening.
+- Reused Sony service, credentials, command model, ViewModel, D-pad and glass buttons from the iOS source. macOS uses its own stable client ID and local Keychain authorization.
+- Found and fixed a real pairing issue: CFNetwork automatically sent a second request after the initial Basic HTTP 401, dismissing this TV's PIN dialog. A dedicated pairing-session delegate cancels that challenge and returns the expected pairing result. Confirmed on the TV, and through a loopback HTTP server that receives exactly one request per action.
+- Final UI test passed: basic controls, Play/Pause popover, English settings, closing the window and reopening it. Tests suspend networking rather than changing the saved address. Confirmed saved IP remains `192.0.2.1`.
+- All 5 shared iOS service tests passed after the pairing-session change. Signed app and extension build passed; installed bundle passes deep signature verification.
+- Actual Mac volume-up changed the TV speaker from 12 to 13; volume-down restored 12. Reopening the app retained authorization without another PIN prompt.
+- Final screenshot: `docs/screenshots/mac-remote.png`, captured after closing and reopening through Control Center. No PIN, credentials, desktop content or TV photos are included.
+- Not verified: deep-standby network wake, all individual commands on this TV, other TV models, and distribution/notarization. This is a locally signed personal build.

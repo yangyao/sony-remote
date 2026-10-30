@@ -1,6 +1,6 @@
 # Sony Remote
 
-無廣告的 Sony BRAVIA 區網遙控器，使用 SwiftUI，支援 iPhone；Mac 版待開發。
+無廣告的 Sony BRAVIA 區網遙控器，使用 SwiftUI，支援 iPhone 與 Mac。
 
 ## iPhone 第一版
 
@@ -14,9 +14,13 @@
 
 Sony 部分機型沒有通用的播放／暫停切換指令，因此主畫面的播放按鍵開啟選單，明確選擇播放或暫停。
 
+## Mac 版
+
+控制中心只添加一個 **Sony Remote** 按鈕，點擊開啟完整的小窗口遙控器；不提供獨立的電源控件。最低 macOS 26，預設 IP 與 iPhone 相同，首次在 Mac 完成配對後保存在本機 Keychain。詳見 [Mac 使用與編譯](apps/macos/README.md)。
+
 ## 畫面
 
-[主畫面](docs/screenshots/iphone-remote.png) · [設定](docs/screenshots/iphone-settings.png) · [玻璃效果更新前後](docs/screenshots/glass-before-after.png)
+[Mac 遙控器](docs/screenshots/mac-remote.png) · [iPhone 主畫面](docs/screenshots/iphone-remote.png) · [設定](docs/screenshots/iphone-settings.png) · [玻璃效果更新前後](docs/screenshots/glass-before-after.png)
 
 視覺檢查與驗證範圍見 [design-qa.md](design-qa.md)。
 
@@ -39,7 +43,7 @@ iOS 26+ 使用 SwiftUI 原生 Liquid Glass；iOS 17–18 使用系統半透明�
 ## 目錄
 
 - `apps/ios/`：iPhone 工程、通訊服務及測試。
-- `apps/macos/`：Mac 版開發入口，目前尚未實作。
+- `apps/macos/`：原生 Mac App、控制中心入口及 UI 測試，詳見 [Mac 使用說明](apps/macos/README.md)。
 - `packages/`：預留共用 Swift Package，目前尚未抽取。
 - `docs/references/dm-tv-remote/`：原始視覺參考與來源。
 - `docs/ux.md`：介面方向與已實作行為。

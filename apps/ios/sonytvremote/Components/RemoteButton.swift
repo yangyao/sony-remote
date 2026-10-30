@@ -1,5 +1,7 @@
 import SwiftUI
+#if os(iOS)
 import UIKit
+#endif
 
 enum RemoteTheme {
     static let background = Color.black
@@ -8,7 +10,9 @@ enum RemoteTheme {
     static let secondary = Color(white: 0.65)
 
     @MainActor static func feedback() {
+#if os(iOS)
         UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+#endif
     }
 }
 

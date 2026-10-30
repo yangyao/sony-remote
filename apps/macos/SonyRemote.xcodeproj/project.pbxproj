@@ -1,0 +1,605 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00073AD4CA2FE78FDD0527AE /* IRCCCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0560D670765F7E21F2A8AEE1 /* IRCCCommand.swift */; };
+		0705A97A9F33F2EB8D6C9359 /* RemoteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F79BBEB5A8EAA0177EC468 /* RemoteButton.swift */; };
+		0A332F9F81F169A1C9440A99 /* MacConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4EE5DFAA4B3E4252E0C939 /* MacConnectionView.swift */; };
+		0F455B5784B916EAF6D6A785 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4593A81276468C6B71C02381 /* Cocoa.framework */; };
+		1F9A66DEA1840EA88047991B /* RemoteControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50FA912332D4D822EDBC663 /* RemoteControl.swift */; };
+		4314AD3A9042AD40263E2DA6 /* RemoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16ED99BD5A36D55B2AB2DBF0 /* RemoteViewModel.swift */; };
+		43F9F6E25E10A816E9D685BD /* RemoteControl.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = ECF0019B9A3D02F0EF97E1B2 /* RemoteControl.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		508FADEB8932830DAC2C69B9 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = F4EB5E94EA8CE83262BB15CC /* AppIcon.icns */; };
+		7D293526413CEA845DDB5CE6 /* OpenRemoteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CD0FEA3533A3237EFDF9EF /* OpenRemoteIntent.swift */; };
+		7DF0C211BDE2436C4341B8E2 /* TVCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDDD10075872E555C26D71A /* TVCredentialStore.swift */; };
+		A25F3D3AF2719EC0B0DADAF4 /* SonyTVService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2688EAA570A8515FD092F87 /* SonyTVService.swift */; };
+		A389910B070D608E5ED0B74B /* SonyRemoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDBA35222AE9A2B47775BABF /* SonyRemoteApp.swift */; };
+		BC509BCC8FDB6706EAF9219A /* SonyRemoteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA6F09814E84CAC07088E89 /* SonyRemoteUITests.swift */; };
+		D5526ABA3234014A0918A3E8 /* DPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2980F3D008835A2ED0B51E59 /* DPadView.swift */; };
+		D697DCC25491A9CCBA0D1BEB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4593A81276468C6B71C02381 /* Cocoa.framework */; };
+		D9846A5D1E0D08AE27116BA3 /* MacRemoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2DB5FB2EA88C6C11332B25 /* MacRemoteView.swift */; };
+		DFAE8AD5BF59E4533DA3F054 /* OpenRemoteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CD0FEA3533A3237EFDF9EF /* OpenRemoteIntent.swift */; };
+		FD23C406A898ABDD065D30D2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4593A81276468C6B71C02381 /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		32C32CCA0F58E81A0E87AFE2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9A986FD94CFC3B79E5E8FD6D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C593C11AE251F6D4F95FBC26;
+			remoteInfo = SonyRemote;
+		};
+		6A84DB96AE84016CF53929BF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9A986FD94CFC3B79E5E8FD6D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EBE1D82E703B189BDAAFD7DD;
+			remoteInfo = RemoteControl;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		61E5E77619CAA3A80844C5DF /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				43F9F6E25E10A816E9D685BD /* RemoteControl.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0560D670765F7E21F2A8AEE1 /* IRCCCommand.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IRCCCommand.swift; path = ../ios/sonytvremote/Models/IRCCCommand.swift; sourceTree = "<group>"; };
+		0DA6F09814E84CAC07088E89 /* SonyRemoteUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SonyRemoteUITests.swift; path = SonyRemoteUITests/SonyRemoteUITests.swift; sourceTree = "<group>"; };
+		16ED99BD5A36D55B2AB2DBF0 /* RemoteViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RemoteViewModel.swift; path = ../ios/sonytvremote/ViewModels/RemoteViewModel.swift; sourceTree = "<group>"; };
+		1B2DB5FB2EA88C6C11332B25 /* MacRemoteView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MacRemoteView.swift; path = SonyRemote/MacRemoteView.swift; sourceTree = "<group>"; };
+		2980F3D008835A2ED0B51E59 /* DPadView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DPadView.swift; path = ../ios/sonytvremote/Components/DPadView.swift; sourceTree = "<group>"; };
+		3E4EE5DFAA4B3E4252E0C939 /* MacConnectionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MacConnectionView.swift; path = SonyRemote/MacConnectionView.swift; sourceTree = "<group>"; };
+		4593A81276468C6B71C02381 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		66F79BBEB5A8EAA0177EC468 /* RemoteButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RemoteButton.swift; path = ../ios/sonytvremote/Components/RemoteButton.swift; sourceTree = "<group>"; };
+		6EDDD10075872E555C26D71A /* TVCredentialStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TVCredentialStore.swift; path = ../ios/sonytvremote/Services/TVCredentialStore.swift; sourceTree = "<group>"; };
+		70214243D1FF1A0CA0726EA8 /* SonyRemoteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyRemoteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		92CD0FEA3533A3237EFDF9EF /* OpenRemoteIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenRemoteIntent.swift; path = Shared/OpenRemoteIntent.swift; sourceTree = "<group>"; };
+		C2688EAA570A8515FD092F87 /* SonyTVService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SonyTVService.swift; path = ../ios/sonytvremote/Services/SonyTVService.swift; sourceTree = "<group>"; };
+		C50FA912332D4D822EDBC663 /* RemoteControl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RemoteControl.swift; path = RemoteControl/RemoteControl.swift; sourceTree = "<group>"; };
+		ECF0019B9A3D02F0EF97E1B2 /* RemoteControl.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RemoteControl.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDBA35222AE9A2B47775BABF /* SonyRemoteApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SonyRemoteApp.swift; path = SonyRemote/SonyRemoteApp.swift; sourceTree = "<group>"; };
+		EED377E93D99D947BB135899 /* SonyRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SonyRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4EB5E94EA8CE83262BB15CC /* AppIcon.icns */ = {isa = PBXFileReference; includeInIndex = 1; name = AppIcon.icns; path = Resources/AppIcon.icns; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4929273C6F131475FCCFF19D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD23C406A898ABDD065D30D2 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9507D190D2B4F3DBBBA65EDE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0F455B5784B916EAF6D6A785 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A22D96DDC8F264A50FC77CC0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D697DCC25491A9CCBA0D1BEB /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		17DF3DD6453C7FA4CFBEA6D9 = {
+			isa = PBXGroup;
+			children = (
+				D57B66CE7CD3B1A17059797D /* Products */,
+				82BF354AECC9DBA9FC2E3BE6 /* Frameworks */,
+				0560D670765F7E21F2A8AEE1 /* IRCCCommand.swift */,
+				C2688EAA570A8515FD092F87 /* SonyTVService.swift */,
+				6EDDD10075872E555C26D71A /* TVCredentialStore.swift */,
+				16ED99BD5A36D55B2AB2DBF0 /* RemoteViewModel.swift */,
+				66F79BBEB5A8EAA0177EC468 /* RemoteButton.swift */,
+				2980F3D008835A2ED0B51E59 /* DPadView.swift */,
+				EDBA35222AE9A2B47775BABF /* SonyRemoteApp.swift */,
+				3E4EE5DFAA4B3E4252E0C939 /* MacConnectionView.swift */,
+				1B2DB5FB2EA88C6C11332B25 /* MacRemoteView.swift */,
+				92CD0FEA3533A3237EFDF9EF /* OpenRemoteIntent.swift */,
+				C50FA912332D4D822EDBC663 /* RemoteControl.swift */,
+				0DA6F09814E84CAC07088E89 /* SonyRemoteUITests.swift */,
+				F4EB5E94EA8CE83262BB15CC /* AppIcon.icns */,
+			);
+			sourceTree = "<group>";
+		};
+		82BF354AECC9DBA9FC2E3BE6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AA35EF1A108ACFE9603E7BDA /* OS X */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AA35EF1A108ACFE9603E7BDA /* OS X */ = {
+			isa = PBXGroup;
+			children = (
+				4593A81276468C6B71C02381 /* Cocoa.framework */,
+			);
+			name = "OS X";
+			sourceTree = "<group>";
+		};
+		D57B66CE7CD3B1A17059797D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EED377E93D99D947BB135899 /* SonyRemote.app */,
+				ECF0019B9A3D02F0EF97E1B2 /* RemoteControl.appex */,
+				70214243D1FF1A0CA0726EA8 /* SonyRemoteUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		51D7869B81DB89B6183C69FB /* SonyRemoteUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5E5E67E68B9D9F775A0BF6F7 /* Build configuration list for PBXNativeTarget "SonyRemoteUITests" */;
+			buildPhases = (
+				8388FF329590B98661CAAAEA /* Sources */,
+				A22D96DDC8F264A50FC77CC0 /* Frameworks */,
+				C259B4903C49BFE217F14A7D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F74D82C727F306D1AB3227A5 /* PBXTargetDependency */,
+			);
+			name = SonyRemoteUITests;
+			productName = SonyRemoteUITests;
+			productReference = 70214243D1FF1A0CA0726EA8 /* SonyRemoteUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		C593C11AE251F6D4F95FBC26 /* SonyRemote */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 06A451BE261955D4A75FD9CB /* Build configuration list for PBXNativeTarget "SonyRemote" */;
+			buildPhases = (
+				99E1AA35C70462759BB986C4 /* Sources */,
+				9507D190D2B4F3DBBBA65EDE /* Frameworks */,
+				D92E262CF9826ECB3A81E085 /* Resources */,
+				61E5E77619CAA3A80844C5DF /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A6840B7D5FBBE61AA3FC93FA /* PBXTargetDependency */,
+			);
+			name = SonyRemote;
+			productName = SonyRemote;
+			productReference = EED377E93D99D947BB135899 /* SonyRemote.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EBE1D82E703B189BDAAFD7DD /* RemoteControl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D285A2F00CCB81084D6EBF98 /* Build configuration list for PBXNativeTarget "RemoteControl" */;
+			buildPhases = (
+				7B3980AD8901BD6001B36CB5 /* Sources */,
+				4929273C6F131475FCCFF19D /* Frameworks */,
+				A648BDA072CD265A4E89056D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RemoteControl;
+			productName = RemoteControl;
+			productReference = ECF0019B9A3D02F0EF97E1B2 /* RemoteControl.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9A986FD94CFC3B79E5E8FD6D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = 00D71F811768C7D36B3B1972 /* Build configuration list for PBXProject "SonyRemote" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 17DF3DD6453C7FA4CFBEA6D9;
+			minimizedProjectReferenceProxies = 0;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = D57B66CE7CD3B1A17059797D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C593C11AE251F6D4F95FBC26 /* SonyRemote */,
+				EBE1D82E703B189BDAAFD7DD /* RemoteControl */,
+				51D7869B81DB89B6183C69FB /* SonyRemoteUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A648BDA072CD265A4E89056D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C259B4903C49BFE217F14A7D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D92E262CF9826ECB3A81E085 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				508FADEB8932830DAC2C69B9 /* AppIcon.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7B3980AD8901BD6001B36CB5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DFAE8AD5BF59E4533DA3F054 /* OpenRemoteIntent.swift in Sources */,
+				1F9A66DEA1840EA88047991B /* RemoteControl.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8388FF329590B98661CAAAEA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC509BCC8FDB6706EAF9219A /* SonyRemoteUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99E1AA35C70462759BB986C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00073AD4CA2FE78FDD0527AE /* IRCCCommand.swift in Sources */,
+				A25F3D3AF2719EC0B0DADAF4 /* SonyTVService.swift in Sources */,
+				7DF0C211BDE2436C4341B8E2 /* TVCredentialStore.swift in Sources */,
+				4314AD3A9042AD40263E2DA6 /* RemoteViewModel.swift in Sources */,
+				0705A97A9F33F2EB8D6C9359 /* RemoteButton.swift in Sources */,
+				D5526ABA3234014A0918A3E8 /* DPadView.swift in Sources */,
+				A389910B070D608E5ED0B74B /* SonyRemoteApp.swift in Sources */,
+				0A332F9F81F169A1C9440A99 /* MacConnectionView.swift in Sources */,
+				D9846A5D1E0D08AE27116BA3 /* MacRemoteView.swift in Sources */,
+				7D293526413CEA845DDB5CE6 /* OpenRemoteIntent.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A6840B7D5FBBE61AA3FC93FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = RemoteControl;
+			target = EBE1D82E703B189BDAAFD7DD /* RemoteControl */;
+			targetProxy = 6A84DB96AE84016CF53929BF /* PBXContainerItemProxy */;
+		};
+		F74D82C727F306D1AB3227A5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SonyRemote;
+			target = C593C11AE251F6D4F95FBC26 /* SonyRemote */;
+			targetProxy = 32C32CCA0F58E81A0E87AFE2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		02A2D4298291168FEE6579CC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Config/RemoteControl.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/RemoteControl-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yangyao.sonyremote.mac.controls;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) REMOTE_EXTENSION";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		0BA25DF51464B959CBA7822F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Config/SonyRemote.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/SonyRemote-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Sony Remote";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yangyao.sonyremote.mac;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		0E86BF6FCA790F51F9214215 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		1F6AF3A201B37BC733FCA66D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yangyao.sonyremote.mac.uitests;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = SonyRemote;
+			};
+			name = Debug;
+		};
+		56DCBF8C3B51973AB8DF04CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		9015B372BE8C32926C059A34 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Config/SonyRemote.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/SonyRemote-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Sony Remote";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yangyao.sonyremote.mac;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		979BB57255EB21D2ADF7D4E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yangyao.sonyremote.mac.uitests;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = SonyRemote;
+			};
+			name = Release;
+		};
+		EE8486D7CE66E3B7B607C255 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Config/RemoteControl.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/RemoteControl-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yangyao.sonyremote.mac.controls;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) REMOTE_EXTENSION";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		00D71F811768C7D36B3B1972 /* Build configuration list for PBXProject "SonyRemote" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56DCBF8C3B51973AB8DF04CD /* Debug */,
+				0E86BF6FCA790F51F9214215 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		06A451BE261955D4A75FD9CB /* Build configuration list for PBXNativeTarget "SonyRemote" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0BA25DF51464B959CBA7822F /* Release */,
+				9015B372BE8C32926C059A34 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5E5E67E68B9D9F775A0BF6F7 /* Build configuration list for PBXNativeTarget "SonyRemoteUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				979BB57255EB21D2ADF7D4E3 /* Release */,
+				1F6AF3A201B37BC733FCA66D /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D285A2F00CCB81084D6EBF98 /* Build configuration list for PBXNativeTarget "RemoteControl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02A2D4298291168FEE6579CC /* Release */,
+				EE8486D7CE66E3B7B607C255 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9A986FD94CFC3B79E5E8FD6D /* Project object */;
+}
