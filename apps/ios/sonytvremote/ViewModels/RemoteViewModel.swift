@@ -19,6 +19,7 @@ class RemoteViewModel: ObservableObject {
     private var commandGeneration = 0
     private var commandTask: Task<Void, Never>?
     private var errorTask: Task<Void, Never>?
+    @Published var pairingRequired = false
     @Published var isOn: Bool = false
     @Published var volume: Int = 0
     @Published var maxVolume: Int = 100
@@ -42,6 +43,16 @@ class RemoteViewModel: ObservableObject {
         let psk = defaults.string(forKey: "tv_psk") ?? ""
         logger.debug("Configuring service with IP: \(ip, privacy: .public)")
         await service.configure(ip: ip, psk: psk)
+    }
+
+    func checkAuthorization() async {
+        do {
+            try await service.verifyControlAuthorization()
+        } catch let error as TVError where error.requiresAuthorization {
+            pairingRequired = true
+        } catch {
+            // Let normal connection status report reachability; don't prompt pairing for network errors.
+        }
     }
 
     func startPolling() {
@@ -252,6 +263,12 @@ class RemoteViewModel: ObservableObject {
     // MARK: - Error
 
     private func showError(_ error: Error) {
+        if let tvError = error as? TVError, tvError.requiresAuthorization {
+            errorTask?.cancel()
+            errorMessage = nil
+            pairingRequired = true
+            return
+        }
         logger.error("Showing error to user: \(error.localizedDescription, privacy: .public)")
         errorTask?.cancel()
         if case TVError.notConfigured = error {

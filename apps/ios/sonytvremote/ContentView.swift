@@ -12,6 +12,7 @@ struct ContentView: View {
             .task {
                 await vm.loadSettings()
                 vm.startPolling()
+                await vm.checkAuthorization()
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { vm.startPolling() }

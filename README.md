@@ -30,7 +30,9 @@ iOS 26+ 使用 SwiftUI 原生 Liquid Glass；iOS 17–18 使用系統半透明�
 4. iPhone 與電視連到同一區網，App 預設連接 `192.0.2.1`。
 5. 若要更改地址，點上方電視名稱，修改 IP 並點「Connect」；需要 PSK 時再展開「Advanced」。
 
-已從預設地址讀到電視待機狀態；實體遙控按鍵尚待驗證。PSK 認證及各按鍵支援程度依型號而異；需要 PIN 配對的機型尚未實作配對流程。待機喚醒亦需依機型另行驗證，現階段沒有實作 Wake-on-LAN。
+首次連接需要授權的電視時，App 會自動進入配對：先開啟電視，在手機填入電視顯示的四位 PIN，再點 Pair TV。之後使用儲存在 Keychain 的憑據自動連接，不保存 PIN。若電視使用固定 PSK，可在 Advanced 填入原有金鑰。
+
+已在實體 BRAVIA 完成 PIN 配對，使用者確認音量按鍵可控制。待機喚醒與其他機型仍需另行驗證；目前沒有實作 UDP Wake-on-LAN。
 
 文字輸入不會自動喚起 iPhone 鍵盤；偶爾輸入時可用方向鍵操作電視的螢幕鍵盤，或使用實體遙控器。
 
@@ -53,7 +55,7 @@ xcodebuild -project apps/ios/sonytvremote.xcodeproj \
   -only-testing:sonytvremoteTests -only-testing:sonytvremoteUITests/RemoteUITests test
 ```
 
-通訊測試使用 URLProtocol 模擬 Sony 回應，驗證 PSK、REST／SOAP 格式及電視回報按鍵碼。
+通訊測試使用 URLProtocol 模擬 Sony 回應，驗證 PSK、REST／SOAP 格式、電視回報按鍵碼、PIN 配對、錯誤 PIN、憑據重載及不同電視間的憑據隔離。
 UI 測試涵蓋主畫面、設定面板與播放選單；另驗證底部三個入口／重複標題／狀態文字已移除，以及預設 IP 和精簡設定。
 
 上游程式依 Apache-2.0 授權，詳見 `apps/ios/LICENSE`；來源與修改見 `docs/upstream.md`。

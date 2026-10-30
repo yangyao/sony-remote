@@ -93,3 +93,13 @@
 - 真機簽名編譯通過，已更新並成功啟動於使用者 iPhone 15。
 
 final result: passed
+
+
+## PIN pairing verification — 2026-10-30
+
+- Fixed Sony device registration to include the WOL capability, which made this TV display its pairing dialog.
+- Authorization checks use a protected endpoint; public power status no longer counts as proof of control access.
+- User completed pairing on test device iPhone 15 and confirmed volume-up changed the TV volume.
+- Installed the final build and relaunched it: main remote appeared without another pairing prompt, with active power status. Credentials persist in the iPhone Keychain; PIN is not stored.
+- Final simulator run passed: 5 unit tests and 2 UI tests. Covers incorrect PIN, credential persistence, REST/IRCC authorization, host isolation, and canonical registration capabilities. Signed device build passed.
+- Main layout unchanged. Updated main screenshot contains no pairing code or TV content.

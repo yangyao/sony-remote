@@ -6,6 +6,17 @@ enum TVError: LocalizedError {
     case networkError(String)
     case httpError(Int, String)
     case invalidResponse(String)
+    case authorizationRequired
+    case invalidPIN
+    case pairingUnavailable
+    case credentialStorage
+
+    var requiresAuthorization: Bool {
+        switch self {
+        case .authorizationRequired, .httpError(401, _), .httpError(403, _): return true
+        default: return false
+        }
+    }
 
     var errorDescription: String? {
         switch self {
@@ -21,6 +32,14 @@ enum TVError: LocalizedError {
             case 500: return "HTTP 500 – TV internal error. \(body.prefix(80))"
             default:  return "HTTP \(code). \(body.prefix(80))"
             }
+        case .authorizationRequired:
+            return "Pair this app with the TV to enable remote control."
+        case .invalidPIN:
+            return "Incorrect PIN. Enter the code currently shown on the TV."
+        case .pairingUnavailable:
+            return "Pairing is unavailable. Turn on the TV and allow remote device registration."
+        case .credentialStorage:
+            return "Could not save TV pairing. Please try again."
         case .invalidResponse(let detail):
             return "Invalid response: \(detail)"
         }
@@ -36,6 +55,8 @@ actor SonyTVService {
     private var psk: String = ""
     private var session: URLSession
     private let defaults: UserDefaults
+    private let credentialStore: any TVCredentialStoring
+    private var authCookie: String?
     private var irccPath: String? = nil              // cached once discovered
     private var appLaunchSupported: Bool = true     // set false if TV returns error 12
     private var tvRemoteCodes: [String: String] = [:] // codes fetched from TV via getRemoteControllerInfo
@@ -53,21 +74,28 @@ actor SonyTVService {
         }
     }
 
-    init(session: URLSession? = nil, defaults: UserDefaults = .standard) {
+    init(session: URLSession? = nil, defaults: UserDefaults = .standard,
+         credentialStore: any TVCredentialStoring = KeychainTVCredentialStore()) {
         self.defaults = defaults
+        self.credentialStore = credentialStore
         let config = URLSessionConfiguration.default
+        config.httpShouldSetCookies = false
+        config.httpCookieStorage = nil
+        config.urlCredentialStorage = nil
         config.timeoutIntervalForRequest = 8
         config.timeoutIntervalForResource = 15
         self.session = session ?? URLSession(configuration: config)
         // Load saved settings immediately
         self.tvIP = (defaults.string(forKey: "tv_ip") ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         self.psk  = (defaults.string(forKey: "tv_psk") ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        self.authCookie = credentialStore.load(for: self.tvIP)
     }
 
     func configure(ip: String, psk: String) {
         let nextIP = ip.trimmingCharacters(in: .whitespacesAndNewlines)
         let nextPSK = psk.trimmingCharacters(in: .whitespacesAndNewlines)
         guard nextIP != tvIP || nextPSK != self.psk else { return }
+        if nextIP != tvIP { self.authCookie = credentialStore.load(for: nextIP) }
         self.tvIP = nextIP
         self.psk = nextPSK
         self.irccPath = nil
@@ -77,6 +105,94 @@ actor SonyTVService {
 
     private func reloadFromUserDefaults() {
         configure(ip: defaults.string(forKey: "tv_ip") ?? "", psk: defaults.string(forKey: "tv_psk") ?? "")
+    }
+
+    // MARK: - TV authorization
+
+    enum PairingResult: Equatable, Sendable { case pinRequired, paired }
+
+    private func authorize(_ request: inout URLRequest) {
+        request.httpShouldHandleCookies = false
+        if !psk.isEmpty {
+            request.setValue(psk, forHTTPHeaderField: "X-Auth-PSK")
+        } else if let authCookie {
+            request.setValue(authCookie, forHTTPHeaderField: "Cookie")
+        }
+    }
+
+    /// Match the generic access needed by remote buttons; power status is public.
+    func verifyControlAuthorization() async throws {
+        do {
+            _ = try await restRequest(service: "system", method: "getLEDIndicatorStatus")
+        } catch let error as TVError where !error.requiresAuthorization {
+            // Older models may not expose this protected, read-only method.
+            _ = try await getSystemInfo()
+        }
+    }
+
+    func requestPairing(pin: String? = nil) async throws -> PairingResult {
+        reloadFromUserDefaults()
+        guard !tvIP.isEmpty else { throw TVError.notConfigured }
+        if let pin {
+            guard pin.count == 4, pin.allSatisfy({ $0.isASCII && $0.isNumber }) else {
+                throw TVError.invalidPIN
+            }
+        }
+        let clientID: String
+        if let saved = defaults.string(forKey: "sony_client_id") { clientID = saved }
+        else {
+            clientID = "SonyRemote:" + UUID().uuidString
+            defaults.set(clientID, forKey: "sony_client_id")
+        }
+        let url = try tvURL(path: "/sony/accessControl")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpShouldHandleCookies = false
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("SonyRemote/1.0", forHTTPHeaderField: "User-Agent")
+        // Sony requires this capability entry to show the device-registration PIN dialog.
+        // This is a registration request, not a change to the TV's authentication settings.
+        let body: [String: Any] = ["method": "actRegister", "id": 1, "version": "1.0",
+            "params": [["clientid": clientID, "nickname": "Sony Remote", "level": "private"],
+                       [["value": "yes", "function": "WOL"]]] as [Any]]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        if let pin {
+            request.setValue("Basic " + Data(":\(pin)".utf8).base64EncodedString(),
+                             forHTTPHeaderField: "Authorization")
+        }
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else {
+            throw TVError.invalidResponse("No pairing response")
+        }
+        if http.statusCode == 401 {
+            if pin == nil { return .pinRequired }
+            throw TVError.invalidPIN
+        }
+        if http.statusCode == 403 { throw TVError.pairingUnavailable }
+        guard (200...299).contains(http.statusCode) else {
+            throw TVError.httpError(http.statusCode, "Pairing failed")
+        }
+        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw TVError.invalidResponse("Invalid pairing response")
+        }
+        if let error = json["error"] as? [Any] {
+            if let code = error.first as? Int, code == 401 || code == 403 {
+                if pin != nil { throw TVError.invalidPIN }
+                throw TVError.pairingUnavailable
+            }
+            throw TVError.invalidResponse("TV could not register this app")
+        }
+        guard json["result"] != nil else { throw TVError.invalidResponse("Missing pairing result") }
+        let headers = http.allHeaderFields.reduce(into: [String: String]()) {
+            if let key = $1.key as? String { $0[key] = String(describing: $1.value) }
+        }
+        let cookies = HTTPCookie.cookies(withResponseHeaderFields: headers, for: url)
+        guard let cookie = HTTPCookie.requestHeaderFields(with: cookies)["Cookie"], !cookie.isEmpty else {
+            throw TVError.invalidResponse("TV did not return a pairing credential")
+        }
+        try credentialStore.save(cookie, for: tvIP)
+        authCookie = cookie
+        return .paired
     }
 
     // MARK: - IRCC Command
@@ -171,9 +287,7 @@ actor SonyTVService {
         request.httpMethod = "POST"
         request.setValue("text/xml; charset=UTF-8", forHTTPHeaderField: "Content-Type")
         request.setValue("\"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC\"", forHTTPHeaderField: "SOAPACTION")
-        if !psk.isEmpty {
-            request.setValue(psk, forHTTPHeaderField: "X-Auth-PSK")
-        }
+        authorize(&request)
         request.httpBody = soapBody.data(using: .utf8)
 
         let (data, response) = try await session.data(for: request)
@@ -203,9 +317,7 @@ actor SonyTVService {
         var request = URLRequest(url: try tvURL(path: "/sony/\(service)"))
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        if !psk.isEmpty {
-            request.setValue(psk, forHTTPHeaderField: "X-Auth-PSK")
-        }
+        authorize(&request)
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let (data, response) = try await session.data(for: request)
@@ -223,6 +335,9 @@ actor SonyTVService {
         }
         // Check for API-level error in response body e.g. {"error":[7,"Illegal Argument"]}
         if let errArray = json["error"] as? [Any] {
+            if let code = errArray.first as? Int, code == 401 || code == 403 {
+                throw TVError.authorizationRequired
+            }
             let code = errArray.first.map { "\($0)" } ?? "?"
             let msg  = errArray.last  as? String ?? "unknown"
             throw TVError.invalidResponse("TV error \(code): \(msg)")

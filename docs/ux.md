@@ -20,7 +20,7 @@
 
 ## 限制
 
-Sony IRCC 是離散按鍵，滑動會映射成方向指令；不是 Apple TV 的連續觸控協定。待機喚醒、認證方式與可用按鍵須以實體電視驗證。第一版手動填寫 IP，沒有自動搜尋或 PIN 配對。
+Sony IRCC 是離散按鍵，滑動會映射成方向指令；不是 Apple TV 的連續觸控協定。待機喚醒、認證方式與可用按鍵須以實體電視驗證。預設使用個人電視 IP，沒有自動搜尋；需要認證時自動進入 PIN 配對。
 
 ## Mac 後續
 
@@ -37,3 +37,7 @@ Sony IRCC 是離散按鍵，滑動會映射成方向指令；不是 Apple TV 的
 ## 設定語言
 
 IP 設定頁直接使用英文：Connection、Done、TV IP、Connect／Connecting…、Advanced、Pre-shared key (PSK)。連線錯誤提示與頁內無障礙標籤也使用英文，不新增翻譯檔或語言切換。主遙控器的語言與布局不變。
+
+## 一次性配對
+
+控制被拒絕或啟動時未取得授權，直接開啟 Connection。電視未開機時只提示先開機；開機後顯示 PIN 欄位、Pair TV 與 Show code again。配對成功儲存 cookie 到 Keychain，清除 PIN 並返回原遙控器。平常的設定仍只顯示 IP、Connect 與收合的 Advanced。只讀電源狀態不等於有控制權。

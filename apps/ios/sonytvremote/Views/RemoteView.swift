@@ -4,6 +4,7 @@ struct RemoteView: View {
     @EnvironmentObject var vm: RemoteViewModel
     @AppStorage("tv_name") private var tvName = "Sony BRAVIA"
     @State private var showSettings = false
+    @State private var settingsDetent: PresentationDetent = .height(320)
 
     var body: some View {
         GeometryReader { geometry in
@@ -42,7 +43,15 @@ struct RemoteView: View {
                 .padding(.bottom, 8)
             }
         }
+        .onChange(of: vm.pairingRequired) { _, needed in
+            if needed {
+                settingsDetent = .large
+                showSettings = true
+            }
+        }
         .sheet(isPresented: $showSettings, onDismiss: {
+            vm.pairingRequired = false
+            settingsDetent = .height(320)
             Task { await vm.loadSettings(); await vm.refreshStatus() }
         }) {
             NavigationStack {
@@ -64,7 +73,7 @@ struct RemoteView: View {
             .environmentObject(vm)
             .preferredColorScheme(.dark)
             .tint(.white)
-            .presentationDetents([.height(320), .large])
+            .presentationDetents([.height(320), .large], selection: $settingsDetent)
             .presentationDragIndicator(.visible)
         }
     }
