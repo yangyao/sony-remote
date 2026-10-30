@@ -4,7 +4,7 @@
 
 ## iPhone 第一版
 
-- 黑灰單頁遙控器，保留圓形方向盤與既有布局，按鍵使用原生 Liquid Glass。
+- 自動跟隨系統 Light / Dark Mode 的單頁遙控器，保留圓形方向盤與既有布局，按鍵使用原生 Liquid Glass。
 - 圓形導航區：滑動方向、點按確認、按住方向圓點連續移動。
 - 返回、首頁、播放／暫停入口、靜音。
 - 直向電視音量加減，按住可連續調整；控制電視，不控制手機音量。
@@ -17,6 +17,14 @@ Sony 部分機型沒有通用的播放／暫停切換指令，因此主畫面的
 ## Mac 版
 
 控制中心只添加一個 **Sony Remote** 按鈕，點擊開啟完整的小窗口遙控器；不提供獨立的電源控件。最低 macOS 26，預設 IP 與 iPhone 相同，首次在 Mac 完成配對後保存在本機 Keychain。詳見 [Mac 使用與編譯](apps/macos/README.md)。
+
+## 外觀與圖標
+
+iPhone 與 Mac 都自動跟隨系統深淺色外觀，包含主遙控器、連接設定及玻璃按鍵，沒有額外的主題設定或切換按鈕。共用色彩資源位於 `packages/Appearance/RemoteColors.xcassets`。
+
+兩端使用同一套原創遙控器圖標。iPhone 提供普通、深色與染色資源，Mac 透過 AppIcon asset catalog 編譯為系統圖標。圖形可用 `swift tools/render-app-icons.swift` 重建。
+
+[iPhone 淺色](docs/screenshots/iphone-remote-light.png) · [iPhone 深色](docs/screenshots/iphone-remote-dark.png) · [Mac 淺色](docs/screenshots/mac-remote-light.png) · [Mac 深色](docs/screenshots/mac-remote-dark.png)
 
 ## 畫面
 
@@ -44,7 +52,7 @@ iOS 26+ 使用 SwiftUI 原生 Liquid Glass；iOS 17–18 使用系統半透明�
 
 - `apps/ios/`：iPhone 工程、通訊服務及測試。
 - `apps/macos/`：原生 Mac App、控制中心入口及 UI 測試，詳見 [Mac 使用說明](apps/macos/README.md)。
-- `packages/`：預留共用 Swift Package，目前尚未抽取。
+- `packages/Appearance/`：兩端共用的深淺色色彩資源；通訊 Swift Package 尚未抽取。
 - `docs/references/dm-tv-remote/`：原始視覺參考與來源。
 - `docs/ux.md`：介面方向與已實作行為。
 - `docs/apple-tv-on-mac.md`：Mac 控制 Apple TV 的現成工具。

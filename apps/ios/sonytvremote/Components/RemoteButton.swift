@@ -4,10 +4,11 @@ import UIKit
 #endif
 
 enum RemoteTheme {
-    static let background = Color.black
-    static let surface = Color(white: 0.12)
-    static let center = Color(white: 0.19)
-    static let secondary = Color(white: 0.65)
+    static let background = Color("RemoteBackground")
+    static let surface = Color("RemoteSurface")
+    static let dpad = Color("RemoteDPad")
+    static let separator = Color.primary.opacity(0.10)
+    static let secondary = Color.secondary
 
     @MainActor static func feedback() {
 #if os(iOS)
@@ -20,7 +21,7 @@ struct RemoteKey: View {
     let icon: String
     let label: String
     var size: CGFloat = 76
-    var tint: Color = .white
+    var tint: Color = .primary
     let action: () async -> Void
 
     var body: some View {
@@ -117,12 +118,12 @@ private struct RemoteGlassModifier<S: Shape>: ViewModifier {
             content
         } else if reduceTransparency {
             content.background(RemoteTheme.surface, in: shape)
-                .overlay(shape.stroke(.white.opacity(0.20), lineWidth: 0.5))
+                .overlay(shape.stroke(.primary.opacity(0.20), lineWidth: 0.5))
         } else if #available(iOS 26.0, *) {
             content.glassEffect(.regular.interactive(interactive), in: shape)
         } else {
             content.background(.ultraThinMaterial, in: shape)
-                .overlay(shape.stroke(.white.opacity(0.16), lineWidth: 0.5))
+                .overlay(shape.stroke(.primary.opacity(0.16), lineWidth: 0.5))
         }
     }
 }

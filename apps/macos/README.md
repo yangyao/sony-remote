@@ -13,7 +13,7 @@
 
 ## 操作
 
-- 圓形方向鍵、確認、返回、首頁、播放／暫停、靜音及直向音量加減，沿用 iPhone 的原生 Liquid Glass 視覺。
+- 圓形方向鍵、確認、返回、首頁、播放／暫停、靜音及直向音量加減，沿用 iPhone 的原生 Liquid Glass 視覺。主畫面與設定頁自動跟隨系統深淺色，沒有主題切換設定。
 - 按住方向圓點或音量鍵可連續發送指令。
 - 方向鍵和 Return 對應導航及確認，Escape 返回；配對頁內不攔截這些遙控快捷鍵。
 - 播放按鈕開啟 Play / Pause 小面板，以適配 Sony 分離的播放／暫停指令。
@@ -25,6 +25,7 @@
 - `RemoteControl/`：WidgetKit 控制中心入口。
 - `Shared/OpenRemoteIntent.swift`：App 與擴展共同編譯的 App Intent；在 App 進程開啟窗口。
 - `Config/`：網路使用說明、sandbox 與 network client entitlement。
+- `Assets.xcassets/`：AppIcon 圖標與系統 accent color；共用深淺色資源引用 `../../packages/Appearance/`。
 - `SonyRemoteUITests/`：基本按鈕、播放面板、設定頁、關閉後重新開啟窗口的 UI 測試；測試時不連接電視。
 
 通訊服務、Keychain、按鍵定義、ViewModel、方向盤與玻璃按鍵直接引用 `../ios/sonytvremote/` 的共用 Swift 檔案，維持一份實作。

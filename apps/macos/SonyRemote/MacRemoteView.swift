@@ -42,13 +42,13 @@ struct MacRemoteView: View {
                                 }.padding(16)
                             }
                         RemoteKey(icon: vm.isMuted ? "speaker.slash.fill" : "speaker.wave.2", label: "Mute",
-                                  size: 58, tint: vm.isMuted ? .orange : .white) { await vm.toggleMute() }
+                                  size: 58, tint: vm.isMuted ? .orange : .primary) { await vm.toggleMute() }
                     }
                     VStack(spacing: 12) {
                         RemoteKey(icon: "tv", label: "Home", size: 58) { await vm.sendCommand(.home) }
                         VStack(spacing: 0) {
                             HoldRemoteKey(icon: "plus", label: "Volume up", size: 64, showsBackground: false, fontSize: 23) { await vm.volumeUp() }
-                            Rectangle().fill(.white.opacity(0.1)).frame(width: 24, height: 1)
+                            Rectangle().fill(RemoteTheme.separator).frame(width: 24, height: 1)
                             HoldRemoteKey(icon: "minus", label: "Volume down", size: 64, showsBackground: false, fontSize: 23) { await vm.volumeDown() }
                         }.remoteGlass(in: Capsule())
                     }
@@ -60,7 +60,7 @@ struct MacRemoteView: View {
         }
         .padding(.horizontal, 30).padding(.top, 28).padding(.bottom, 26)
         .frame(width: 340)
-        .background(Color.black)
+        .background(RemoteTheme.background.ignoresSafeArea())
         .focusable().focusEffectDisabled()
         .onKeyPress(.upArrow) { send(.up) }
         .onKeyPress(.downArrow) { send(.down) }
@@ -72,7 +72,7 @@ struct MacRemoteView: View {
             vm.pairingRequired = false
             if !isUITesting { Task { await vm.loadSettings(); await vm.refreshStatus() } }
         }) {
-            MacConnectionView().environmentObject(vm).preferredColorScheme(.dark)
+            MacConnectionView().environmentObject(vm)
         }
         .onChange(of: vm.pairingRequired) { _, needed in if needed { showConnection = true } }
         .task {
@@ -98,7 +98,7 @@ struct MacRemoteView: View {
         switch vm.connectionState {
         case .connected: .green
         case .standby: .orange
-        case .connecting: .white
+        case .connecting: .primary
         case .disconnected: .gray
         }
     }

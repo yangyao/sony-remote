@@ -7,14 +7,16 @@ struct ContentView: View {
     var body: some View {
         RemoteView()
             .environmentObject(vm)
-            .preferredColorScheme(.dark)
-            .tint(.white)
+            .foregroundStyle(.primary)
+            .tint(.primary)
             .task {
+                guard !ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return }
                 await vm.loadSettings()
                 vm.startPolling()
                 await vm.checkAuthorization()
             }
             .onChange(of: scenePhase) { _, phase in
+                guard !ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return }
                 if phase == .active { vm.startPolling() }
                 else { vm.stopPolling() }
             }

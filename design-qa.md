@@ -117,3 +117,15 @@ final result: passed
 - Actual Mac volume-up changed the TV speaker from 12 to 13; volume-down restored 12. Reopening the app retained authorization without another PIN prompt.
 - Final screenshot: `docs/screenshots/mac-remote.png`, captured after closing and reopening through Control Center. No PIN, credentials, desktop content or TV photos are included.
 - Not verified: deep-standby network wake, all individual commands on this TV, other TV models, and distribution/notarization. This is a locally signed personal build.
+
+
+## Automatic appearance and app icons — 2026-10-30
+
+- Removed forced dark schemes, fixed white foregrounds, and the Mac darkAqua override. Both apps inherit system appearance. Shared color assets provide light/dark backgrounds, D-pad surfaces and opaque fallback surfaces; foregrounds and separators use semantic colors. No theme preferences or buttons were added.
+- Verified the running Mac app changes between light and dark when system appearance changes. Inspected main and Connection screens in both modes. Restored the Mac's original light appearance and confirmed its automatic-appearance setting remains enabled.
+- Verified the running iOS simulator changes between light/dark via system appearance, including Connection and playback controls. Simulator uses the integrated display (display 1); its extra display defaults to a blank framebuffer and is not the app screen.
+- Added original vector remote artwork and a reproducible AppKit renderer. iPhone icon files are 1024×1024 opaque RGB, with ordinary, dark and tinted variants. Mac contains all standard icon sizes in AppIcon.appiconset; the built bundle supplies CFBundleIconName/CFBundleIconFile and the compiled icon.
+- Refreshed the installed Mac bundle registration and icon cache; NSWorkspace now resolves the custom remote icon instead of the generic placeholder.
+- Passed 5 service tests, 2 iOS UI tests in light appearance, and the Mac UI test; additionally reran the iOS main/Connection/playback flow in dark appearance. Both signed builds succeeded.
+- Updated test device iPhone 15 and the Mac installation. The physical iPhone screenshot confirms system light appearance and retained pairing (TV currently in standby). No TV power or volume commands were sent for this appearance update.
+- Screenshots: iphone-remote-light/dark, iphone-settings-light/dark, mac-remote-light/dark, mac-settings-light/dark in docs/screenshots. Existing layout retained.

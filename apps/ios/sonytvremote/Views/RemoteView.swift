@@ -52,7 +52,9 @@ struct RemoteView: View {
         .sheet(isPresented: $showSettings, onDismiss: {
             vm.pairingRequired = false
             settingsDetent = .height(320)
-            Task { await vm.loadSettings(); await vm.refreshStatus() }
+            if !ProcessInfo.processInfo.arguments.contains("--ui-testing") {
+                Task { await vm.loadSettings(); await vm.refreshStatus() }
+            }
         }) {
             NavigationStack {
                 SettingsView()
@@ -71,8 +73,7 @@ struct RemoteView: View {
                 .background(RemoteTheme.background)
             }
             .environmentObject(vm)
-            .preferredColorScheme(.dark)
-            .tint(.white)
+            .tint(.primary)
             .presentationDetents([.height(320), .large], selection: $settingsDetent)
             .presentationDragIndicator(.visible)
         }
@@ -101,7 +102,7 @@ struct RemoteView: View {
             } label: {
                 ZStack {
                     if vm.connectionState == .connecting {
-                        ProgressView().tint(.white)
+                        ProgressView().tint(.primary)
                     } else {
                         Image(systemName: "power")
                             .font(.system(size: 16, weight: .medium))
@@ -124,7 +125,7 @@ struct RemoteView: View {
         switch vm.connectionState {
         case .connected: return .green
         case .standby: return .orange
-        case .connecting: return .white
+        case .connecting: return .primary
         case .disconnected: return RemoteTheme.secondary
         }
     }
@@ -144,7 +145,7 @@ struct RemoteView: View {
                 }
                 .accessibilityLabel("播放控制")
                 RemoteKey(icon: vm.isMuted ? "speaker.slash.fill" : "speaker.wave.2",
-                          label: "靜音", size: keySize, tint: vm.isMuted ? .orange : .white) {
+                          label: "靜音", size: keySize, tint: vm.isMuted ? .orange : .primary) {
                     await vm.toggleMute()
                 }
             }
@@ -154,7 +155,7 @@ struct RemoteView: View {
                     HoldRemoteKey(icon: "plus", label: "提高電視音量", size: keySize + 8, showsBackground: false) {
                         await vm.volumeUp()
                     }
-                    Rectangle().fill(.white.opacity(0.10)).frame(width: 28, height: 1)
+                    Rectangle().fill(RemoteTheme.separator).frame(width: 28, height: 1)
                     HoldRemoteKey(icon: "minus", label: "降低電視音量", size: keySize + 8, showsBackground: false) {
                         await vm.volumeDown()
                     }

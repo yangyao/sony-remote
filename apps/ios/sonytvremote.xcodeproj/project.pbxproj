@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8BA4FEC8C3299C44F9FB0763 /* RemoteColors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D54445945DBE0A518D494792 /* RemoteColors.xcassets */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4DB127142F5D6233005DDF26 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,21 +31,28 @@
 		4DB127042F5D6232005DDF26 /* sonytvremote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = sonytvremote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DB127132F5D6233005DDF26 /* sonytvremoteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = sonytvremoteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DB1271D2F5D6233005DDF26 /* sonytvremoteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = sonytvremoteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D54445945DBE0A518D494792 /* RemoteColors.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = RemoteColors.xcassets; path = ../../packages/Appearance/RemoteColors.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4DB127062F5D6232005DDF26 /* sonytvremote */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = sonytvremote;
 			sourceTree = "<group>";
 		};
 		4DB127162F5D6233005DDF26 /* sonytvremoteTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = sonytvremoteTests;
 			sourceTree = "<group>";
 		};
 		4DB127202F5D6233005DDF26 /* sonytvremoteUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = sonytvremoteUITests;
 			sourceTree = "<group>";
 		};
@@ -79,6 +90,7 @@
 				4DB127162F5D6233005DDF26 /* sonytvremoteTests */,
 				4DB127202F5D6233005DDF26 /* sonytvremoteUITests */,
 				4DB127052F5D6232005DDF26 /* Products */,
+				D54445945DBE0A518D494792 /* RemoteColors.xcassets */,
 			);
 			sourceTree = "<group>";
 		};
@@ -111,8 +123,6 @@
 				4DB127062F5D6232005DDF26 /* sonytvremote */,
 			);
 			name = sonytvremote;
-			packageProductDependencies = (
-			);
 			productName = sonytvremote;
 			productReference = 4DB127042F5D6232005DDF26 /* sonytvremote.app */;
 			productType = "com.apple.product-type.application";
@@ -134,8 +144,6 @@
 				4DB127162F5D6233005DDF26 /* sonytvremoteTests */,
 			);
 			name = sonytvremoteTests;
-			packageProductDependencies = (
-			);
 			productName = sonytvremoteTests;
 			productReference = 4DB127132F5D6233005DDF26 /* sonytvremoteTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -157,8 +165,6 @@
 				4DB127202F5D6233005DDF26 /* sonytvremoteUITests */,
 			);
 			name = sonytvremoteUITests;
-			packageProductDependencies = (
-			);
 			productName = sonytvremoteUITests;
 			productReference = 4DB1271D2F5D6233005DDF26 /* sonytvremoteUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8BA4FEC8C3299C44F9FB0763 /* RemoteColors.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,7 +403,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -430,7 +437,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

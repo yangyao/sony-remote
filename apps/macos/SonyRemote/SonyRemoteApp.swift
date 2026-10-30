@@ -40,7 +40,7 @@ final class RemoteWindowController: NSObject, NSWindowDelegate {
     func show() {
         if window == nil {
             let content = MacRemoteView(vm: vm)
-                .environment(\.colorScheme, .dark).foregroundStyle(.white).tint(.white)
+                .foregroundStyle(.primary).tint(.primary)
             let controller = NSHostingController(rootView: content)
             let window = NSWindow(contentViewController: controller)
             window.styleMask = [.titled, .closable, .miniaturizable, .fullSizeContentView]
@@ -48,8 +48,7 @@ final class RemoteWindowController: NSObject, NSWindowDelegate {
             window.identifier = NSUserInterfaceItemIdentifier("remote")
             window.titleVisibility = .hidden
             window.titlebarAppearsTransparent = true
-            window.appearance = NSAppearance(named: .darkAqua)
-            window.backgroundColor = .black
+            window.backgroundColor = NSColor(named: "RemoteBackground") ?? .windowBackgroundColor
             window.isReleasedWhenClosed = false
             window.delegate = self
             window.setContentSize(NSSize(width: 340, height: 590))

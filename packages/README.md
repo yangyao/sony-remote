@@ -1,4 +1,5 @@
-# 共用套件（預留）
+# 共用資源
 
-待電視連線驗證後，將 Sony IRCC / REST 通訊、指令模型與裝置設定抽成 SonyRemoteCore。
-目前 iOS 通訊程式仍位於 apps/ios/sonytvremote/Services，未建立空殼套件。
+`Appearance/RemoteColors.xcassets` 由 iOS 與 macOS 工程共同編譯，包含隨系統外觀變化的背景、表面與方向盤色彩。
+
+通訊 Swift 檔案目前仍位於 `apps/ios/sonytvremote/`，Mac 工程直接引用，尚未抽取為 SonyRemoteCore Swift Package。

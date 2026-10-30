@@ -5,7 +5,7 @@ final class RemoteUITests: XCTestCase {
     func testRemoteAndConnectionFlow() throws {
         continueAfterFailure = false
         let app = XCUIApplication()
-        app.launchArguments = ["-tv_ip", "192.0.2.1", "-tv_name", "Sony BRAVIA", "-AppleLanguages", "(zh-Hant)"]
+        app.launchArguments = ["--ui-testing", "-tv_ip", "192.0.2.1", "-tv_name", "Sony BRAVIA", "-AppleLanguages", "(zh-Hant)"]
         app.launch()
         XCTAssertTrue(app.buttons["電視連線設定"].waitForExistence(timeout: 15))
         XCTAssertTrue(app.buttons["提高電視音量"].exists)
@@ -37,7 +37,7 @@ final class RemoteUITests: XCTestCase {
     @MainActor
     func testSimplifiedSettings() throws {
         let app = XCUIApplication()
-        app.launchArguments = ["-tv_ip", "192.0.2.1", "-AppleLanguages", "(zh-Hant)"]
+        app.launchArguments = ["--ui-testing", "-tv_ip", "192.0.2.1", "-AppleLanguages", "(zh-Hant)"]
         app.launch()
         XCTAssertTrue(app.buttons["電視連線設定"].waitForExistence(timeout: 15))
         app.buttons["電視連線設定"].tap()

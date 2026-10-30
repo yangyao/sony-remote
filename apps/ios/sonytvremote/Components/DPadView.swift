@@ -9,8 +9,8 @@ struct DPadView: View {
     var body: some View {
         ZStack {
             Circle()
-                .fill(Color(white: 0.105))
-                .overlay(Circle().strokeBorder(.white.opacity(0.07), lineWidth: 1))
+                .fill(RemoteTheme.dpad)
+                .overlay(Circle().strokeBorder(Color.primary.opacity(0.07), lineWidth: 1))
             ForEach(0..<4) { index in
                 let command: IRCCCommand = [.up, .right, .down, .left][index]
                 let label = ["向上", "向右", "向下", "向左"][index]

@@ -14,9 +14,10 @@
 		1F9A66DEA1840EA88047991B /* RemoteControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50FA912332D4D822EDBC663 /* RemoteControl.swift */; };
 		4314AD3A9042AD40263E2DA6 /* RemoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16ED99BD5A36D55B2AB2DBF0 /* RemoteViewModel.swift */; };
 		43F9F6E25E10A816E9D685BD /* RemoteControl.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = ECF0019B9A3D02F0EF97E1B2 /* RemoteControl.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		508FADEB8932830DAC2C69B9 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = F4EB5E94EA8CE83262BB15CC /* AppIcon.icns */; };
+		5BDBF08E92F780A00DF4D732 /* RemoteColors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D72B1EE49B1A3256B8B99D43 /* RemoteColors.xcassets */; };
 		7D293526413CEA845DDB5CE6 /* OpenRemoteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CD0FEA3533A3237EFDF9EF /* OpenRemoteIntent.swift */; };
 		7DF0C211BDE2436C4341B8E2 /* TVCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDDD10075872E555C26D71A /* TVCredentialStore.swift */; };
+		94AD0CB5DEE7375AC93C60FB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97F1219EE7F806BA44F340B0 /* Assets.xcassets */; };
 		A25F3D3AF2719EC0B0DADAF4 /* SonyTVService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2688EAA570A8515FD092F87 /* SonyTVService.swift */; };
 		A389910B070D608E5ED0B74B /* SonyRemoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDBA35222AE9A2B47775BABF /* SonyRemoteApp.swift */; };
 		BC509BCC8FDB6706EAF9219A /* SonyRemoteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA6F09814E84CAC07088E89 /* SonyRemoteUITests.swift */; };
@@ -70,12 +71,13 @@
 		6EDDD10075872E555C26D71A /* TVCredentialStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TVCredentialStore.swift; path = ../ios/sonytvremote/Services/TVCredentialStore.swift; sourceTree = "<group>"; };
 		70214243D1FF1A0CA0726EA8 /* SonyRemoteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyRemoteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		92CD0FEA3533A3237EFDF9EF /* OpenRemoteIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenRemoteIntent.swift; path = Shared/OpenRemoteIntent.swift; sourceTree = "<group>"; };
+		97F1219EE7F806BA44F340B0 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C2688EAA570A8515FD092F87 /* SonyTVService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SonyTVService.swift; path = ../ios/sonytvremote/Services/SonyTVService.swift; sourceTree = "<group>"; };
 		C50FA912332D4D822EDBC663 /* RemoteControl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RemoteControl.swift; path = RemoteControl/RemoteControl.swift; sourceTree = "<group>"; };
+		D72B1EE49B1A3256B8B99D43 /* RemoteColors.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = RemoteColors.xcassets; path = ../../packages/Appearance/RemoteColors.xcassets; sourceTree = "<group>"; };
 		ECF0019B9A3D02F0EF97E1B2 /* RemoteControl.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RemoteControl.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDBA35222AE9A2B47775BABF /* SonyRemoteApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SonyRemoteApp.swift; path = SonyRemote/SonyRemoteApp.swift; sourceTree = "<group>"; };
 		EED377E93D99D947BB135899 /* SonyRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SonyRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F4EB5E94EA8CE83262BB15CC /* AppIcon.icns */ = {isa = PBXFileReference; includeInIndex = 1; name = AppIcon.icns; path = Resources/AppIcon.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,7 +125,8 @@
 				92CD0FEA3533A3237EFDF9EF /* OpenRemoteIntent.swift */,
 				C50FA912332D4D822EDBC663 /* RemoteControl.swift */,
 				0DA6F09814E84CAC07088E89 /* SonyRemoteUITests.swift */,
-				F4EB5E94EA8CE83262BB15CC /* AppIcon.icns */,
+				D72B1EE49B1A3256B8B99D43 /* RemoteColors.xcassets */,
+				97F1219EE7F806BA44F340B0 /* Assets.xcassets */,
 			);
 			sourceTree = "<group>";
 		};
@@ -260,7 +263,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				508FADEB8932830DAC2C69B9 /* AppIcon.icns in Resources */,
+				5BDBF08E92F780A00DF4D732 /* RemoteColors.xcassets in Resources */,
+				94AD0CB5DEE7375AC93C60FB /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,7 +329,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = Config/RemoteControl.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -351,7 +355,7 @@
 				CODE_SIGN_ENTITLEMENTS = Config/SonyRemote.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -505,7 +509,7 @@
 				CODE_SIGN_ENTITLEMENTS = Config/SonyRemote.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -542,7 +546,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = Config/RemoteControl.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
