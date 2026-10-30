@@ -33,3 +33,7 @@ Sony IRCC 是離散按鍵，滑動會映射成方向指令；不是 Apple TV 的
 - 方向盤外圈保留低調的實色表面，避免在確認鍵下再疊一層玻璃。幾何尺寸、點按／按住／滑動語意不變。
 - 按壓時不再將按鍵大幅淡出，以保留系統玻璃高光。降低透明度時使用不透明表面；舊系統使用 ultraThinMaterial。
 - [使用者手機上的 Apple TV 材質參考](references/apple-tv-liquid-glass/README.md)只用於材質與配色，不複製其布局。
+
+## 設定語言
+
+IP 設定頁直接使用英文：Connection、Done、TV IP、Connect／Connecting…、Advanced、Pre-shared key (PSK)。連線錯誤提示與頁內無障礙標籤也使用英文，不新增翻譯檔或語言切換。主遙控器的語言與布局不變。

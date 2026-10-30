@@ -23,7 +23,7 @@ final class RemoteUITests: XCTestCase {
         app.buttons["電視連線設定"].tap()
         XCTAssertTrue(app.textFields["tv-ip"].waitForExistence(timeout: 5))
         capture("iphone-settings", app)
-        app.buttons["完成"].tap()
+        app.buttons["Done"].tap()
         XCTAssertTrue(app.buttons["確認"].waitForExistence(timeout: 5))
 
         app.buttons["播放控制"].tap()
@@ -44,14 +44,14 @@ final class RemoteUITests: XCTestCase {
         let address = app.textFields["tv-ip"]
         XCTAssertTrue(address.waitForExistence(timeout: 5))
         XCTAssertEqual(address.value as? String, "192.0.2.1")
-        XCTAssertTrue(app.buttons["連接"].exists)
-        XCTAssertTrue(app.buttons["連接"].isEnabled)
+        XCTAssertTrue(app.buttons["Connect"].exists)
+        XCTAssertTrue(app.buttons["Connect"].isEnabled)
         XCTAssertFalse(app.staticTexts["如何連接"].exists)
         XCTAssertFalse(app.buttons["測試首頁按鍵"].exists)
         XCTAssertFalse(app.buttons["測試連線"].exists)
         XCTAssertFalse(app.secureTextFields["tv-psk"].exists)
         capture("iphone-settings", app)
-        app.buttons["完成"].tap()
+        app.buttons["Done"].tap()
         XCTAssertTrue(app.buttons["確認"].waitForExistence(timeout: 5))
     }
 

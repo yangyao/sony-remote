@@ -13,14 +13,14 @@ struct SettingsView: View {
         Form {
             Section {
                 HStack {
-                    Text("電視 IP")
+                    Text("TV IP")
                     TextField(TVConnectionSettings.defaultIP, text: $tvIP)
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.numbersAndPunctuation)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .focused($editingAddress)
-                        .accessibilityLabel("電視 IP 位址")
+                        .accessibilityLabel("TV IP address")
                         .accessibilityIdentifier("tv-ip")
                 }
                 Button {
@@ -28,7 +28,7 @@ struct SettingsView: View {
                     Task { await connect() }
                 } label: {
                     HStack {
-                        Text(connecting ? "連接中…" : "連接")
+                        Text(connecting ? "Connecting…" : "Connect")
                         Spacer()
                         if connecting { ProgressView() }
                         else { Image(systemName: "arrow.right") }
@@ -44,11 +44,11 @@ struct SettingsView: View {
             }
 
             Section {
-                DisclosureGroup("進階設定") {
-                    SecureField("連線金鑰（PSK）", text: $tvPSK)
+                DisclosureGroup("Advanced") {
+                    SecureField("Pre-shared key (PSK)", text: $tvPSK)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                        .accessibilityLabel("電視連線金鑰")
+                        .accessibilityLabel("TV pre-shared key")
                         .accessibilityIdentifier("tv-psk")
                 }
             }
@@ -56,7 +56,7 @@ struct SettingsView: View {
         .safeAreaPadding(.top, 16)
         .scrollContentBackground(.hidden)
         .background(RemoteTheme.background)
-        .navigationTitle("連線設定")
+        .navigationTitle("Connection")
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -72,7 +72,16 @@ struct SettingsView: View {
             await vm.refreshStatus()
             dismiss()
         } catch {
-            errorMessage = error.localizedDescription
+            switch error {
+            case TVError.notConfigured:
+                errorMessage = "Enter your TV IP address."
+            case TVError.httpError(401, _):
+                errorMessage = "Incorrect pre-shared key. Check Advanced settings."
+            case TVError.httpError(403, _):
+                errorMessage = "Remote control is not allowed by the TV."
+            default:
+                errorMessage = "Unable to connect. Check the IP address and TV network settings."
+            }
         }
     }
 }

@@ -83,4 +83,13 @@
 - 真機簽名編譯通過，已更新並成功啟動；已開啟手機實際截圖確認最終畫面。
 - 無剩餘可處理的 P0/P1/P2 視覺問題；通訊協定未變更，沒有測試實體電視按鍵或新增文字輸入功能。
 
+
+## IP 設定頁直接使用英文
+
+- 標題／按鈕／欄位為 Connection、Done、TV IP、Connect、Advanced、Pre-shared key (PSK)，包含頁內無障礙標籤與錯誤提示。
+- 沒有新增翻譯資源或語言切換，也沒有更動主遙控器介面。
+- 已開啟 `docs/screenshots/iphone-settings.png` 確認英文文字完整、無截斷，IP 與 Connect 可用，仍是精簡小面板。
+- `/tmp/sony-english-settings.xcresult`：設定頁 UI 測試通過，含開啟／關閉、預設 IP 與 Connect 啟用狀態。
+- 真機簽名編譯通過，已更新並成功啟動於使用者 iPhone 15。
+
 final result: passed

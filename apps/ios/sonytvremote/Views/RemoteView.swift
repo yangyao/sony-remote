@@ -51,9 +51,9 @@ struct RemoteView: View {
             }
             .safeAreaInset(edge: .top, spacing: 0) {
                 HStack {
-                    Text("連線設定").font(.headline)
+                    Text("Connection").font(.headline)
                     Spacer()
-                    Button("完成") { showSettings = false }
+                    Button("Done") { showSettings = false }
                         .font(.body.weight(.semibold))
                         .frame(minWidth: 44, minHeight: 44)
                 }
