@@ -2,10 +2,10 @@ import SwiftUI
 import UIKit
 
 enum RemoteTheme {
-    static let background = Color(red: 0.15, green: 0.12, blue: 0.18)
-    static let surface = Color(red: 0.21, green: 0.18, blue: 0.24)
-    static let center = Color(red: 0.29, green: 0.25, blue: 0.32)
-    static let secondary = Color(red: 0.65, green: 0.61, blue: 0.68)
+    static let background = Color.black
+    static let surface = Color(white: 0.12)
+    static let center = Color(white: 0.19)
+    static let secondary = Color(white: 0.65)
 
     @MainActor static func feedback() {
         UIImpactFeedbackGenerator(style: .soft).impactOccurred()
@@ -28,7 +28,7 @@ struct RemoteKey: View {
                 .font(.system(size: size * 0.35, weight: .medium))
                 .foregroundStyle(tint)
                 .frame(width: size, height: size)
-                .background(RemoteTheme.surface, in: Circle())
+                .remoteGlass(in: Circle())
                 .contentShape(Circle())
         }
         .buttonStyle(ScaleButtonStyle())
@@ -53,7 +53,7 @@ struct HoldRemoteKey: View {
             Image(systemName: icon)
                 .font(.system(size: fontSize, weight: .medium))
                 .frame(width: size, height: size)
-                .background(showsBackground ? RemoteTheme.surface : .clear, in: Circle())
+                .remoteGlass(in: Circle(), enabled: showsBackground)
                 .contentShape(Circle())
         }
         .buttonStyle(HoldPressStyle { pressed in
@@ -86,7 +86,8 @@ private struct HoldPressStyle: ButtonStyle {
     let changed: (Bool) -> Void
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .opacity(configuration.isPressed ? 0.55 : 1)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
             .onChange(of: configuration.isPressed) { _, pressed in changed(pressed) }
     }
 }
@@ -94,8 +95,48 @@ private struct HoldPressStyle: ButtonStyle {
 struct ScaleButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.94 : 1)
-            .opacity(configuration.isPressed ? 0.65 : 1)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+    }
+}
+
+/// Native Liquid Glass on iOS 26+, with a material fallback for older phones.
+/// No layout padding is added, so all existing hit targets and spacing stay intact.
+private struct RemoteGlassModifier<S: Shape>: ViewModifier {
+    let shape: S
+    let interactive: Bool
+    let enabled: Bool
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
+    @ViewBuilder func body(content: Content) -> some View {
+        if !enabled {
+            content
+        } else if reduceTransparency {
+            content.background(RemoteTheme.surface, in: shape)
+                .overlay(shape.stroke(.white.opacity(0.20), lineWidth: 0.5))
+        } else if #available(iOS 26.0, *) {
+            content.glassEffect(.regular.interactive(interactive), in: shape)
+        } else {
+            content.background(.ultraThinMaterial, in: shape)
+                .overlay(shape.stroke(.white.opacity(0.16), lineWidth: 0.5))
+        }
+    }
+}
+
+extension View {
+    func remoteGlass<S: Shape>(in shape: S, interactive: Bool = true, enabled: Bool = true) -> some View {
+        modifier(RemoteGlassModifier(shape: shape, interactive: interactive, enabled: enabled))
+    }
+}
+
+struct RemoteGlassGroup<Content: View>: View {
+    @ViewBuilder let content: () -> Content
+
+    @ViewBuilder var body: some View {
+        if #available(iOS 26.0, *) {
+            GlassEffectContainer(spacing: 8) { content() }
+        } else {
+            content()
+        }
     }
 }

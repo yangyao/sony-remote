@@ -4,7 +4,7 @@
 
 ## iPhone 第一版
 
-- 深色單頁遙控器，參考 Apple TV Remote 與 DM TV Remote。
+- 黑灰單頁遙控器，保留圓形方向盤與既有布局，按鍵使用原生 Liquid Glass。
 - 圓形導航區：滑動方向、點按確認、按住方向圓點連續移動。
 - 返回、首頁、播放／暫停入口、靜音。
 - 直向電視音量加減，按住可連續調整；控制電視，不控制手機音量。
@@ -16,9 +16,11 @@ Sony 部分機型沒有通用的播放／暫停切換指令，因此主畫面的
 
 ## 畫面
 
-[主畫面](docs/screenshots/iphone-remote.png) · [設定](docs/screenshots/iphone-settings.png) · [更多控制](docs/screenshots/iphone-more.png) · [與參考圖比較](docs/screenshots/controls-comparison.png)
+[主畫面](docs/screenshots/iphone-remote.png) · [設定](docs/screenshots/iphone-settings.png) · [更多控制](docs/screenshots/iphone-more.png) · [玻璃效果更新前後](docs/screenshots/glass-before-after.png)
 
 視覺檢查與驗證範圍見 [design-qa.md](design-qa.md)。
+
+iOS 26+ 使用 SwiftUI 原生 Liquid Glass；iOS 17–18 使用系統半透明材質。開啟「降低透明度」時改用清晰的不透明按鍵。
 
 ## 執行
 

@@ -5,7 +5,7 @@
 ## 視覺依據與證據
 
 - 來源：`docs/references/dm-tv-remote/remote-original.webp`，889 × 1771 px。
-- 實作：`docs/screenshots/iphone-remote.png`，1398 × 2034 px。
+- 初版實作（已存歷史）：`docs/screenshots/iphone-remote-pre-glass-simulator.png`，1398 × 2034 px。
 - 原生模擬器：iPhone Duo / iOS 27.1，視窗 466 × 678 pt，3x 密度；沒有 CSS viewport。
 - 狀態：深色、尚未設定電視。參考圖為已連線狀態，播放卡片依使用者要求移除；不比較兩者的連線指示顏色。
 - 完整並排：`docs/screenshots/full-comparison.png`。兩側維持原比例各縮至最大 430 × 900 px，展示來源桌面視窗與手機實作的整體差異，不將作業系統視窗邊框或狀態區當作 App 差異。
@@ -51,5 +51,22 @@
 - 真機版簽名編譯通過，已更新並成功啟動於使用者的 iPhone 15。
 - 讀取電視 `getPowerStatus` 成功回傳 HTTP 200 / standby；這項查詢無需 PSK。尚未驗證實體遙控按鍵或待機喚醒。
 - 字體、深色配色與主畫面保持一致；最終小面板沒有可處理的 P0/P1/P2 視覺問題。
+
+
+## Liquid Glass 材質更新
+
+- 本次約束：布局與按鍵完全延續；只移除紫色並加入原生 Liquid Glass。沒有採用 Apple TV 的大觸控板。
+- 材質來源：`docs/references/apple-tv-liquid-glass/iphone-reference.png`，iPhone 15 / iOS 27.0.1，1179 × 2556 px，3x。
+- 同一手機改前／改後：`docs/screenshots/iphone-before-glass.png`、`docs/screenshots/iphone-remote-glass.png`，均為 1179 × 2556 px；待機狀態相同。
+- 已開啟並排證據：`docs/screenshots/glass-before-after.png`，各側等比例縮至 393 × 852 px。圓形方向盤與確認鍵的直徑、按鍵分組位置、音量膠囊與底部入口一致。
+- 已開啟材質局部對照：`docs/screenshots/glass-material-comparison.png`，上方 Apple TV 按鍵，下方 Sony 按鍵。檢查邊緣高光、中性灰材質與白色 SF Symbols；不將兩者不同按鍵尺寸／排列視為差異。
+- 字體與文案：延續既有大小、字重、繁體中文與連線狀態。
+- 布局與間距：沒有新增 padding 或改動尺寸計算，只有功能鍵增加不改變布局的 GlassEffectContainer。
+- 顏色與材質：純黑底、中性灰方向盤；原生 `.regular.interactive()` 用於確認與功能按鍵／音量膠囊。方向盤外圈不再加玻璃，避免雙層玻璃。
+- 圖片資產：App 仍使用 SF Symbols 與原生材質，沒有嵌入參考圖或用點陣圖假裝玻璃。
+- 無障礙：保留標籤與觸控尺寸；降低透明度時使用清晰的不透明表面。iOS 17–18 使用系統半透明材質 fallback；尚未在舊系統實機驗證。
+- 真機簽名編譯通過，已安裝並成功啟動於使用者 iPhone 15；本次真機截圖已確認實際渲染，沒有可處理的 P0/P1/P2 視覺差異。
+- `/tmp/sony-remote-glass.xcresult`：兩個 UI 測試通過，涵蓋遙控器／播放選單／更多面板，以及預設 IP／精簡設定／完成按鈕。日誌沒有 Swift 程式編譯錯誤。
+- 本次沒有修改 Sony 通訊、認證或預設 IP；沒有以真機發送按鍵來驗證電視功能。靜態截圖能確認材質外觀，不作互動動畫效能量測。
 
 final result: passed

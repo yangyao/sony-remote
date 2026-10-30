@@ -9,7 +9,7 @@ struct DPadView: View {
     var body: some View {
         ZStack {
             Circle()
-                .fill(RemoteTheme.surface)
+                .fill(Color(white: 0.105))
                 .overlay(Circle().strokeBorder(.white.opacity(0.07), lineWidth: 1))
             ForEach(0..<4) { index in
                 let command: IRCCCommand = [.up, .right, .down, .left][index]
@@ -23,8 +23,9 @@ struct DPadView: View {
                 RemoteTheme.feedback()
                 Task { await send(.confirm) }
             } label: {
-                Circle().fill(RemoteTheme.center)
+                Circle().fill(.clear)
                     .frame(width: size * 0.40, height: size * 0.40)
+                    .remoteGlass(in: Circle())
                     .contentShape(Circle())
             }
             .buttonStyle(ScaleButtonStyle())

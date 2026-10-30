@@ -20,7 +20,7 @@ struct RemoteView: View {
                     header
                     Spacer(minLength: 16)
                     DPadView(size: padSize) { await vm.sendCommand($0) }
-                    controls(keySize: keySize)
+                    RemoteGlassGroup { controls(keySize: keySize) }
                         .padding(.top, 28)
                     Spacer(minLength: 16)
                     footer
@@ -120,8 +120,7 @@ struct RemoteView: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel("電視連線設定")
-            RemoteKey(icon: "power", label: "電源", size: 46,
-                      tint: Color(red: 0.91, green: 0.43, blue: 0.40)) {
+            RemoteKey(icon: "power", label: "電源", size: 46) {
                 await vm.togglePower()
             }
         }
@@ -148,7 +147,7 @@ struct RemoteView: View {
                     Image(systemName: "playpause.fill")
                         .font(.system(size: 27, weight: .medium))
                         .frame(width: keySize, height: keySize)
-                        .background(RemoteTheme.surface, in: Circle())
+                        .remoteGlass(in: Circle())
                 }
                 .accessibilityLabel("播放控制")
                 RemoteKey(icon: vm.isMuted ? "speaker.slash.fill" : "speaker.wave.2",
@@ -167,7 +166,7 @@ struct RemoteView: View {
                         await vm.volumeDown()
                     }
                 }
-                .background(RemoteTheme.surface, in: Capsule())
+                .remoteGlass(in: Capsule())
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel("電視音量")
             }

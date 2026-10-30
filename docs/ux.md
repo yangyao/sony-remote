@@ -1,6 +1,6 @@
 # iPhone 遙控器 UX
 
-依使用者確認：以 Apple TV Remote 為操作方向，參考 DM TV Remote 的直向音量膠囊與簡潔深色布局，不顯示「正在播放」內容。
+依使用者確認：保留圓形方向盤、既有按鍵位置與直向音量膠囊；只更新黑灰配色與原生 Liquid Glass 材質。不改成 Apple TV 的大觸控板，不顯示「正在播放」內容。
 
 ## 已實作
 
@@ -24,3 +24,11 @@ Sony IRCC 是離散按鍵，滑動會映射成方向指令；不是 Apple TV 的
 ## Mac 後續
 
 共用操作語意與通訊核心，增加選單列、浮動面板及鍵盤捷徑。Mac 版尚未實作。
+
+## Liquid Glass 更新
+
+- 純黑背景、中性灰方向盤，移除紫色。
+- 確認、電源、返回、首頁、播放、靜音與音量膠囊使用 iOS 26+ `glassEffect(.regular.interactive())`；同組功能鍵置於 GlassEffectContainer。
+- 方向盤外圈保留低調的實色表面，避免在確認鍵下再疊一層玻璃。幾何尺寸、點按／按住／滑動語意不變。
+- 按壓時不再將按鍵大幅淡出，以保留系統玻璃高光。降低透明度時使用不透明表面；舊系統使用 ultraThinMaterial。
+- [使用者手機上的 Apple TV 材質參考](references/apple-tv-liquid-glass/README.md)只用於材質與配色，不複製其布局。
