@@ -1,32 +1,32 @@
 # Sony Remote for Mac
 
-macOS 26+ 原生 SwiftUI 遙控器。一個 App 內含一個控制中心入口；點 Sony Remote 開啟完整遙控器，不提供獨立的控制中心電源按鈕。
+macOS 26+ 原生 SwiftUI 遥控器。一个 App 内含一个控制中心入口；点 Sony Remote 开启完整遥控器，不提供独立的控制中心电源按钮。
 
 ## 使用
 
-1. Xcode 開啟 `SonyRemote.xcodeproj`，選 `SonyRemote` scheme 和自己的 Signing Team。
-2. 首次在 Connection 輸入電視 IP，點 Connect，依電視提示輸入四位 PIN；或在 Advanced 填入 PSK。
-3. 控制中心 → Edit Controls → 搜尋 Sony Remote → Add to Control Center。
-4. 日後從控制中心開啟遙控器。關閉窗口、最小化或退出 App 後均可重新喚出。
+1. Xcode 开启 `SonyRemote.xcodeproj`，选 `SonyRemote` scheme 和自己的 Signing Team。
+2. 首次在 Connection 输入电视 IP，点 Connect，依电视提示输入四位 PIN；或在 Advanced 填入 PSK。
+3. 控制中心 → Edit Controls → 搜寻 Sony Remote → Add to Control Center。
+4. 日后从控制中心开启遥控器。关闭窗口、最小化或退出 App 后均可重新唤出。
 
-Mac 與 iPhone 分別配對。裝置內既有地址與授權會保留，原始碼不預填私人地址。
+Mac 与 iPhone 分别配对。装置内既有地址与授权会保留，原始码不预填私人地址。
 
 ## 操作
 
-按鍵與 iPhone 版本相同，使用 Liquid Glass，自動跟隨系統深淺色。按住方向或音量可連續發送指令；方向鍵、Return、Escape 對應導航、確認和返回。配對頁不攔截遙控快捷鍵。
+按键与 iPhone 版本相同，使用 Liquid Glass，自动跟随系统深浅色。按住方向或音量可连续发送指令；方向键、Return、Escape 对应导航、确认和返回。配对页不拦截遥控快捷键。
 
-## 結構
+## 结构
 
-- `SonyRemote/`：SwiftUI 遙控器、英文連接頁與可重用的 AppKit 窗口。
+- `SonyRemote/`：SwiftUI 遥控器、英文连接页与可重用的 AppKit 窗口。
 - `RemoteControl/`：WidgetKit 控制中心入口。
-- `Shared/OpenRemoteIntent.swift`：App 與擴展共用的開啟動作。
-- `Config/`：區網使用說明、sandbox 和 network-client entitlement。
+- `Shared/OpenRemoteIntent.swift`：App 与扩展共用的开启动作。
+- `Config/`：局域网使用说明、sandbox 和 network-client entitlement。
 - `Assets.xcassets/`：AppIcon。
-- `SonyRemoteUITests/`：控制、設定、播放面板及關閉後重新開啟的 UI 測試。
+- `SonyRemoteUITests/`：控制、设置、播放面板及关闭后重新开启的 UI 测试。
 
-共用 Swift 檔案直接引用 `../ios/sonytvremote/`，色彩引用 `../../packages/Appearance/`。
+共用 Swift 文件直接引用 `../ios/sonytvremote/`，色彩引用 `../../packages/Appearance/`。
 
-選好自己的 Signing Team 後，可在 Xcode 執行測試；命令列也可明確傳入自己的 Team：
+选好自己的 Signing Team 后，可在 Xcode 执行测试；命令列也可明确传入自己的 Team：
 
 ```sh
 xcodebuild -project apps/macos/SonyRemote.xcodeproj -scheme SonyRemote \
@@ -34,4 +34,4 @@ xcodebuild -project apps/macos/SonyRemote.xcodeproj -scheme SonyRemote \
   -parallel-testing-enabled NO -collect-test-diagnostics never test
 ```
 
-控制中心使用單個公開的 ControlWidgetButton 開啟 App。參考 [Apple Controls](https://developer.apple.com/documentation/widgetkit/controls-collection)。
+控制中心使用单个公开的 ControlWidgetButton 开启 App。参考 [Apple Controls](https://developer.apple.com/documentation/widgetkit/controls-collection)。
