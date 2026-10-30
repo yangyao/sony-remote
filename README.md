@@ -2,6 +2,16 @@
 
 無廣告的原生 Sony BRAVIA 區網遙控器，支援 iPhone 和 Mac，使用 SwiftUI 與原生 Liquid Glass。
 
+## 畫面
+
+| iPhone · Light | iPhone · Dark |
+| :---: | :---: |
+| <img src="docs/screenshots/iphone-light.png" alt="iPhone 遙控器淺色模式" width="270"> | <img src="docs/screenshots/iphone-dark.png" alt="iPhone 遙控器深色模式" width="270"> |
+
+| Mac · Light | Mac · Dark |
+| :---: | :---: |
+| <img src="docs/screenshots/mac-light.png" alt="Mac 遙控器淺色模式" width="240"> | <img src="docs/screenshots/mac-dark.png" alt="Mac 遙控器深色模式" width="240"> |
+
 ## 功能
 
 - 圓形方向盤：方向、確認、滑動導航與按住連發。
@@ -13,14 +23,13 @@
 
 應用程式啟動、輸入源清單、數字鍵、頻道鍵及「正在播放」資訊不在本專案的範圍內。
 
-## 畫面
+## 連接設定與圖標
 
-| | Light | Dark |
-| --- | --- | --- |
-| iPhone | [淺色](docs/screenshots/iphone-light.png) | [深色](docs/screenshots/iphone-dark.png) |
-| Mac | [淺色](docs/screenshots/mac-light.png) | [深色](docs/screenshots/mac-dark.png) |
+| Connection · Light | Connection · Dark | App Icon |
+| :---: | :---: | :---: |
+| <img src="docs/screenshots/iphone-connection-light.png" alt="Connection 淺色模式" width="200"> | <img src="docs/screenshots/iphone-connection-dark.png" alt="Connection 深色模式" width="200"> | <img src="docs/screenshots/icon-preview.png" alt="Sony Remote 應用程式圖標" width="128"> |
 
-[連接設定](docs/screenshots/iphone-connection-light.png) · [圖標](docs/screenshots/icon-preview.png) · [設計參考](docs/design-references.md)
+[設計參考](docs/design-references.md)
 
 ## 使用與編譯
 
