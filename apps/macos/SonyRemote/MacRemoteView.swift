@@ -3,7 +3,7 @@ import SwiftUI
 struct MacRemoteView: View {
     @ObservedObject var vm: RemoteViewModel
     @Environment(\.scenePhase) private var scenePhase
-    @State private var showConnection = false
+    @State private var showConnection = (UserDefaults.standard.string(forKey: "tv_ip") ?? "").isEmpty
     @State private var showPlayback = false
 
     private var isUITesting: Bool { ProcessInfo.processInfo.arguments.contains("--ui-testing") }

@@ -58,7 +58,6 @@ actor SonyTVService {
     private let credentialStore: any TVCredentialStoring
     private var authCookie: String?
     private var irccPath: String? = nil              // cached once discovered
-    private var appLaunchSupported: Bool = true     // set false if TV returns error 12
     private var tvRemoteCodes: [String: String] = [:] // codes fetched from TV via getRemoteControllerInfo
 
     private func alternativeName(for command: IRCCCommand) -> String? {
@@ -69,7 +68,6 @@ actor SonyTVService {
         case .right:    return "CursorRight"
         case .confirm:  return "Enter"
         case .back:     return "Back"
-        case .info:     return "Info"
         default:        return nil
         }
     }
@@ -100,7 +98,6 @@ actor SonyTVService {
         self.psk = nextPSK
         self.irccPath = nil
         self.tvRemoteCodes = [:]
-        self.appLaunchSupported = true
     }
 
     private func reloadFromUserDefaults() {
@@ -126,7 +123,7 @@ actor SonyTVService {
             _ = try await restRequest(service: "system", method: "getLEDIndicatorStatus")
         } catch let error as TVError where !error.requiresAuthorization {
             // Older models may not expose this protected, read-only method.
-            _ = try await getSystemInfo()
+            _ = try await restRequest(service: "system", method: "getSystemInformation")
         }
     }
 
@@ -221,14 +218,7 @@ actor SonyTVService {
             logger.warning("Failed to fetch remote codes from TV")
             return
         }
-        logger.info("📺 Fetched \(codes.count, privacy: .public) remote codes from TV")
-
-        // Log ALL codes for diagnostic purposes
-        let sortedCodes = codes.sorted { $0.name < $1.name }
-        for entry in sortedCodes {
-            tvRemoteCodes[entry.name] = entry.code
-            logger.info("  📍 \(entry.name, privacy: .public): \(entry.code, privacy: .public)")
-        }
+        tvRemoteCodes = Dictionary(codes.map { ($0.name, $0.code) }, uniquingKeysWith: { _, latest in latest })
     }
 
     func sendIRCC(_ command: IRCCCommand) async throws {
@@ -259,7 +249,7 @@ actor SonyTVService {
         }
     }
 
-    func sendIRCCCode(_ code: String) async throws {
+    private func sendIRCCCode(_ code: String) async throws {
         reloadFromUserDefaults()
         guard !tvIP.isEmpty else { throw TVError.notConfigured }
 
@@ -321,7 +311,7 @@ actor SonyTVService {
 
     // MARK: - REST API
 
-    func restRequest(service: String, method: String, params: [[String: Any]] = []) async throws -> [String: Any] {
+    private func restRequest(service: String, method: String, params: [[String: Any]] = []) async throws -> [String: Any] {
         reloadFromUserDefaults()
         guard !tvIP.isEmpty else { throw TVError.notConfigured }
 
@@ -374,120 +364,17 @@ actor SonyTVService {
         throw TVError.invalidResponse("Missing power status")
     }
 
-    func setPowerStatus(on: Bool) async throws {
-        _ = try await restRequest(service: "system", method: "setPowerStatus",
-                                   params: [["status": on]])
-    }
-
     // MARK: - Volume
 
-    func getVolumeInfo() async throws -> [VolumeInfo] {
+    func getMuteStatus() async throws -> Bool? {
         let result = try await restRequest(service: "audio", method: "getVolumeInformation")
-        guard let results = result["result"] as? [[[String: Any]]] else { return [] }
-        return results.flatMap { $0 }.compactMap { item in
-            guard let target = item["target"] as? String,
-                  let volume = item["volume"] as? Int,
-                  let minVol = item["minVolume"] as? Int,
-                  let maxVol = item["maxVolume"] as? Int,
-                  let mute = item["mute"] as? Bool else { return nil }
-            return VolumeInfo(target: target, volume: volume, minVolume: minVol, maxVolume: maxVol, mute: mute)
-        }
+        guard let results = result["result"] as? [[[String: Any]]] else { return nil }
+        let outputs = results.flatMap { $0 }
+        let speaker = outputs.first(where: { $0["target"] as? String == "speaker" }) ?? outputs.first
+        return speaker?["mute"] as? Bool
     }
 
-    func setVolume(target: String = "speaker", volume: Int) async throws {
-        _ = try await restRequest(service: "audio", method: "setAudioVolume",
-                                   params: [["target": target, "volume": String(volume)]])
-    }
-
-    func setMute(mute: Bool) async throws {
-        _ = try await restRequest(service: "audio", method: "setAudioMute",
-                                   params: [["status": mute]])
-    }
-
-    // MARK: - Apps
-
-    func getAppList() async throws -> [TVApp] {
-        let result = try await restRequest(service: "appControl", method: "getApplicationList")
-        guard let results = result["result"] as? [[[String: Any]]] else { return [] }
-        return results.flatMap { $0 }.compactMap { item in
-            guard let title = item["title"] as? String,
-                  let uri = item["uri"] as? String else { return nil }
-            return TVApp(title: title, uri: uri, iconURL: item["icon"] as? String)
-        }
-    }
-
-    func launchApp(uri: String, title: String) async throws {
-        // 1. IRCC for apps with dedicated remote buttons
-        if let ircc = irccCodeForApp(uri: uri, title: title) {
-            try await sendIRCCCode(ircc)
-            return
-        }
-
-        // 2. setActiveApplication (appControl service)
-        if appLaunchSupported {
-            do {
-                _ = try await restRequest(service: "appControl", method: "setActiveApplication",
-                                           params: [["uri": uri]])
-                return
-            } catch TVError.invalidResponse(let msg) where msg.contains("12") {
-                appLaunchSupported = false
-                // fall through to next method
-            } catch {
-                throw error
-            }
-        }
-
-        // 3. setPlayContent (avContent service) — works on some firmware versions
-        do {
-            _ = try await restRequest(service: "avContent", method: "setPlayContent",
-                                       params: [["uri": uri]])
-            return
-        } catch {
-            // All methods exhausted
-            throw TVError.invalidResponse("Cannot launch \"\(title)\" via API on this TV.\nPress Home on the remote tab to go to the home screen, then open the app manually.")
-        }
-    }
-
-    private func irccCodeForApp(uri: String, title: String) -> String? {
-        let u = uri.lowercased()
-        let t = title.lowercased()
-        if u.contains("netflix")  || t.contains("netflix")           { return IRCCCommand.netflix.rawValue }
-        if u.contains("youtube")  || t.contains("youtube")           { return IRCCCommand.youtube.rawValue }
-        if u.contains("amazon")   || t.contains("amazon")  ||
-           u.contains("prime")    || t.contains("prime")             { return IRCCCommand.prime.rawValue }
-        return nil
-    }
-
-    // MARK: - Inputs
-
-    func getInputs() async throws -> [TVInput] {
-        let result = try await restRequest(service: "avContent", method: "getCurrentExternalInputsStatus")
-        guard let results = result["result"] as? [[[String: Any]]] else { return [] }
-        return results.flatMap { $0 }.compactMap { item in
-            guard let title = item["title"] as? String,
-                  let uri = item["uri"] as? String else { return nil }
-            let icon = item["icon"] as? String ?? "hdmi"
-            let status = item["status"] as? String ?? "notConnected"
-            return TVInput(title: title, uri: uri, icon: icon, status: status)
-        }
-    }
-
-    func setInput(uri: String) async throws {
-        _ = try await restRequest(service: "avContent", method: "setPlayContent",
-                                   params: [["uri": uri]])
-    }
-
-    // MARK: - System Info
-
-    func getSystemInfo() async throws -> [String: Any] {
-        let result = try await restRequest(service: "system", method: "getSystemInformation")
-        if let results = result["result"] as? [[String: Any]] {
-            return results.first ?? [:]
-        }
-        return [:]
-    }
-
-    func getRemoteControllerInfo() async throws -> [(name: String, code: String)] {
+    private func getRemoteControllerInfo() async throws -> [(name: String, code: String)] {
         let result = try await restRequest(service: "system", method: "getRemoteControllerInfo")
         return Self.remoteCodes(from: result)
     }
@@ -500,45 +387,6 @@ actor SonyTVService {
                   let value = item["value"] as? String else { return nil }
             return (name: name, code: value)
         }
-    }
-
-    // MARK: - Playing Content
-
-    func getPlayingContent() async throws -> [String: Any] {
-        let result = try await restRequest(service: "avContent", method: "getPlayingContentInfo",
-                                           params: [["output": ""]])
-        if let results = result["result"] as? [[String: Any]] {
-            return results.first ?? [:]
-        }
-        return [:]
-    }
-
-    // MARK: - Picture
-
-    func setPictureMode(_ mode: String) async throws {
-        _ = try await restRequest(service: "video", method: "setPictureQualitySettings",
-                                   params: [["settings": [["target": "pictureMode", "value": mode]]]])
-    }
-
-    // MARK: - Wake on LAN
-
-    func sendWakeOnLan(macAddress: String) {
-        guard let packet = buildMagicPacket(mac: macAddress) else { return }
-        _ = packet // NWConnection UDP send would go here
-    }
-
-    private func buildMagicPacket(mac: String) -> Data? {
-        let cleaned = mac.replacingOccurrences(of: "[^0-9a-fA-F]", with: "", options: .regularExpression)
-        guard cleaned.count == 12 else { return nil }
-        var bytes: [UInt8] = Array(repeating: 0xFF, count: 6)
-        let macBytes = stride(from: 0, to: 12, by: 2).compactMap { i -> UInt8? in
-            let start = cleaned.index(cleaned.startIndex, offsetBy: i)
-            let end = cleaned.index(start, offsetBy: 2)
-            return UInt8(cleaned[start..<end], radix: 16)
-        }
-        guard macBytes.count == 6 else { return nil }
-        for _ in 0..<16 { bytes += macBytes }
-        return Data(bytes)
     }
 
     // MARK: - Helpers

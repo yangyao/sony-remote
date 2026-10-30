@@ -3,7 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var vm: RemoteViewModel
     @Environment(\.dismiss) private var dismiss
-    @AppStorage("tv_ip") private var tvIP = TVConnectionSettings.defaultIP
+    @AppStorage("tv_ip") private var tvIP = ""
     @AppStorage("tv_psk") private var tvPSK = ""
     @State private var connecting = false
     @State private var message: String?
@@ -20,7 +20,7 @@ struct SettingsView: View {
             Section {
                 HStack {
                     Text("TV IP")
-                    TextField(TVConnectionSettings.defaultIP, text: $tvIP)
+                    TextField(TVConnectionSettings.exampleIP, text: $tvIP)
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.numbersAndPunctuation)
                         .textInputAutocapitalization(.never)

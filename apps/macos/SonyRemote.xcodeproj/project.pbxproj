@@ -12,6 +12,7 @@
 		0A332F9F81F169A1C9440A99 /* MacConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4EE5DFAA4B3E4252E0C939 /* MacConnectionView.swift */; };
 		0F455B5784B916EAF6D6A785 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4593A81276468C6B71C02381 /* Cocoa.framework */; };
 		1F9A66DEA1840EA88047991B /* RemoteControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50FA912332D4D822EDBC663 /* RemoteControl.swift */; };
+		3B754015A06E6961C4F75F36 /* TVConnectionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3907FA1604B2353472C7AAD9 /* TVConnectionSettings.swift */; };
 		4314AD3A9042AD40263E2DA6 /* RemoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16ED99BD5A36D55B2AB2DBF0 /* RemoteViewModel.swift */; };
 		43F9F6E25E10A816E9D685BD /* RemoteControl.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = ECF0019B9A3D02F0EF97E1B2 /* RemoteControl.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5BDBF08E92F780A00DF4D732 /* RemoteColors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D72B1EE49B1A3256B8B99D43 /* RemoteColors.xcassets */; };
@@ -65,6 +66,7 @@
 		16ED99BD5A36D55B2AB2DBF0 /* RemoteViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RemoteViewModel.swift; path = ../ios/sonytvremote/ViewModels/RemoteViewModel.swift; sourceTree = "<group>"; };
 		1B2DB5FB2EA88C6C11332B25 /* MacRemoteView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MacRemoteView.swift; path = SonyRemote/MacRemoteView.swift; sourceTree = "<group>"; };
 		2980F3D008835A2ED0B51E59 /* DPadView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DPadView.swift; path = ../ios/sonytvremote/Components/DPadView.swift; sourceTree = "<group>"; };
+		3907FA1604B2353472C7AAD9 /* TVConnectionSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TVConnectionSettings.swift; path = ../ios/sonytvremote/Models/TVConnectionSettings.swift; sourceTree = "<group>"; };
 		3E4EE5DFAA4B3E4252E0C939 /* MacConnectionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MacConnectionView.swift; path = SonyRemote/MacConnectionView.swift; sourceTree = "<group>"; };
 		4593A81276468C6B71C02381 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		66F79BBEB5A8EAA0177EC468 /* RemoteButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RemoteButton.swift; path = ../ios/sonytvremote/Components/RemoteButton.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				0DA6F09814E84CAC07088E89 /* SonyRemoteUITests.swift */,
 				D72B1EE49B1A3256B8B99D43 /* RemoteColors.xcassets */,
 				97F1219EE7F806BA44F340B0 /* Assets.xcassets */,
+				3907FA1604B2353472C7AAD9 /* TVConnectionSettings.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -302,6 +305,7 @@
 				0A332F9F81F169A1C9440A99 /* MacConnectionView.swift in Sources */,
 				D9846A5D1E0D08AE27116BA3 /* MacRemoteView.swift in Sources */,
 				7D293526413CEA845DDB5CE6 /* OpenRemoteIntent.swift in Sources */,
+				3B754015A06E6961C4F75F36 /* TVConnectionSettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

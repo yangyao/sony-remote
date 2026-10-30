@@ -4,13 +4,13 @@ import Testing
 
 @MainActor
 struct SonyServiceTests {
-    @Test func defaultAddressMigratesEmptySettingsAndPreservesCustomAddress() {
+    @Test func freshInstallHasNoPersonalAddressAndPreservesSavedAddress() {
         let defaults = UserDefaults(suiteName: "sony-settings-tests-\(UUID())")!
         TVConnectionSettings.prepare(in: defaults)
-        #expect(defaults.string(forKey: "tv_ip") == "192.0.2.1")
+        #expect(defaults.string(forKey: "tv_ip") == "")
         defaults.set("", forKey: "tv_ip")
         TVConnectionSettings.prepare(in: defaults)
-        #expect(defaults.string(forKey: "tv_ip") == "192.0.2.1")
+        #expect(defaults.string(forKey: "tv_ip") == "")
         defaults.set("192.0.2.10", forKey: "tv_ip")
         TVConnectionSettings.prepare(in: defaults)
         #expect(defaults.string(forKey: "tv_ip") == "192.0.2.10")
@@ -39,6 +39,7 @@ struct SonyServiceTests {
         try await service.sendIRCC(.volumeUp)
         #expect(try await service.getPowerStatus())
         try await service.verifyControlAuthorization()
+        #expect(try await service.getMuteStatus() == true) // Speaker state works without numeric volume metadata.
     }
 
     @Test func authenticationFailureIsSurfaced() async throws {
@@ -79,6 +80,8 @@ private final class SonyStubProtocol: URLProtocol, @unchecked Sendable {
             } else if json?["method"] as? String == "getLEDIndicatorStatus" {
                 body = #"{"result":[{"mode":"on"}]}"#
             } else { status = 400 }
+        } else if request.url?.path == "/sony/audio" {
+            body = #"{"result":[[{"target":"headphone","mute":false},{"target":"speaker","mute":true,"volume":"12"}]]}"#
         } else if request.url?.path == "/sony/IRCC" {
             let data = request.httpBody ?? readStream(request.httpBodyStream)
             let soap = String(data: data, encoding: .utf8) ?? ""

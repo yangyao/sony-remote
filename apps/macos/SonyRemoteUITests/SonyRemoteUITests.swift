@@ -9,6 +9,7 @@ final class SonyRemoteUITests: XCTestCase {
         app.launch()
         let window = app.windows["Sony Remote"]
         XCTAssertTrue(window.waitForExistence(timeout: 10))
+        if app.buttons["Done"].exists { app.buttons["Done"].click() }
         for label in ["Connection settings", "Power", "Back", "Home", "Playback", "Mute", "Volume up", "Volume down"] {
             XCTAssertTrue(window.buttons[label].exists, "Missing \(label)")
         }
@@ -19,7 +20,6 @@ final class SonyRemoteUITests: XCTestCase {
         window.buttons["Connection settings"].click()
         let address = app.textFields["tv-ip"]
         XCTAssertTrue(address.waitForExistence(timeout: 3))
-        XCTAssertFalse((address.value as? String ?? "").isEmpty)
         XCTAssertTrue(app.buttons["Connect"].exists)
         XCTAssertFalse(app.textFields["tv-pin"].exists)
         app.buttons["Done"].click()

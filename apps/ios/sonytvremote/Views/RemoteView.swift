@@ -3,7 +3,7 @@ import SwiftUI
 struct RemoteView: View {
     @EnvironmentObject var vm: RemoteViewModel
     @AppStorage("tv_name") private var tvName = "Sony BRAVIA"
-    @State private var showSettings = false
+    @State private var showSettings = (UserDefaults.standard.string(forKey: "tv_ip") ?? "").isEmpty
     @State private var settingsDetent: PresentationDetent = .height(320)
 
     var body: some View {

@@ -7,3 +7,20 @@ xcuserdata/
 *.xcuserstate
 .env
 .env.*
+
+# Local credentials, signing exports, archives and diagnostic artifacts
+*.p8
+*.p12
+*.pem
+*.key
+*.mobileprovision
+*.xcarchive/
+*.xcresult/
+*.ipa
+*.app/
+*.log
+*.bundle
+Local.xcconfig
+*.xcconfig.local
+private/
+screenshots-private/

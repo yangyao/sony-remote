@@ -1,0 +1,10 @@
+Sony Remote
+
+Contains modified code derived from Sony TV Remote by Uday Garg.
+Upstream: https://github.com/ug2454/sonytvremote
+Imported revision: c9c30ce353aeee4851de77caffa090282cff126c
+License: Apache License 2.0 (see LICENSE).
+
+This project modifies the original UI and networking implementation and adds
+PIN pairing, native macOS support, Control Center integration, shared appearance
+resources and original app icon artwork. See docs/upstream.md for details.
