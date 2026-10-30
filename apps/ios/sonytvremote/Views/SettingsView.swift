@@ -2,218 +2,117 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var vm: RemoteViewModel
+    @AppStorage("tv_name") private var tvName = "Sony BRAVIA"
     @AppStorage("tv_ip") private var tvIP = ""
     @AppStorage("tv_psk") private var tvPSK = ""
-    @AppStorage("tv_mac") private var tvMAC = ""
-
-    @State private var testStatus: TestStatus = .idle
-    @State private var systemInfoText = ""
-    @State private var diagnosticLog = ""
-
-    enum TestStatus {
-        case idle, testing, success(String), failure(String)
-    }
+    @State private var testing = false
+    @State private var result: String?
+    @State private var succeeded = false
 
     var body: some View {
-        ZStack {
-            Color(red: 0.06, green: 0.06, blue: 0.10).ignoresSafeArea()
+        Form {
+            Section {
+                TextField("電視名稱", text: $tvName)
+                    .accessibilityLabel("電視名稱")
+                HStack {
+                    Text("IP 位址")
+                    TextField("192.168.1.100", text: $tvIP)
+                        .multilineTextAlignment(.trailing)
+                        .keyboardType(.numbersAndPunctuation)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .accessibilityLabel("電視 IP 位址")
+                        .accessibilityIdentifier("tv-ip")
+                }
+                HStack {
+                    Text("連線金鑰")
+                    SecureField("PSK（依機型填寫）", text: $tvPSK)
+                        .multilineTextAlignment(.trailing)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .accessibilityLabel("電視連線金鑰")
+                        .accessibilityIdentifier("tv-psk")
+                }
+            } header: {
+                Text("我的電視")
+            } footer: {
+                Text("iPhone 與電視需連接同一個區域網路。設定會自動儲存。")
+            }
 
-            Form {
-                // Connection Section
-                Section {
+            Section {
+                Button {
+                    Task { await testConnection(sendHome: false) }
+                } label: {
                     HStack {
-                        Label("TV IP Address", systemImage: "network")
-                            .foregroundColor(.white)
+                        Text("測試連線")
                         Spacer()
-                        TextField("192.168.1.x", text: $tvIP)
-                            .multilineTextAlignment(.trailing)
-                            .foregroundColor(.cyan)
-                            .autocorrectionDisabled()
-                            .keyboardType(.decimalPad)
-                            .onChange(of: tvIP) { _, _ in applySettings() }
-                    }
-
-                    HStack {
-                        Label("Pre-Shared Key", systemImage: "key.fill")
-                            .foregroundColor(.white)
-                        Spacer()
-                        SecureField("Optional PSK", text: $tvPSK)
-                            .multilineTextAlignment(.trailing)
-                            .foregroundColor(.cyan)
-                            .onChange(of: tvPSK) { _, _ in applySettings() }
-                    }
-
-                    HStack {
-                        Label("MAC Address", systemImage: "dot.radiowaves.left.and.right")
-                            .foregroundColor(.white)
-                        Spacer()
-                        TextField("For Wake-on-LAN", text: $tvMAC)
-                            .multilineTextAlignment(.trailing)
-                            .foregroundColor(.cyan)
-                            .autocorrectionDisabled()
-                    }
-                } header: {
-                    Text("TV Connection")
-                } footer: {
-                    Text("IP: Settings → Network → Network Status\nPSK: Settings → Network → Home Network Setup → IP Control → Pre-Shared Key\n\nIf your TV has no PSK option, leave it empty.")
-                        .font(.caption)
-                }
-
-                // Diagnostics
-                Section("Diagnostics") {
-                    Button {
-                        Task { await testRESTAPI() }
-                    } label: {
-                        HStack {
-                            Label("Test REST API (System Info)", systemImage: "checkmark.shield")
-                            Spacer()
-                            testStatusView
-                        }
-                    }
-                    .foregroundColor(.white)
-                    .disabled(tvIP.isEmpty)
-
-                    Button {
-                        Task { await testIRCC() }
-                    } label: {
-                        HStack {
-                            Label("Test IRCC (sends Home button)", systemImage: "house")
-                            Spacer()
-                            if case .testing = testStatus { ProgressView() }
-                        }
-                    }
-                    .foregroundColor(.white)
-                    .disabled(tvIP.isEmpty)
-                }
-
-                // Result
-                if case .success(let info) = testStatus {
-                    Section("Result") {
-                        Text(info).font(.caption).foregroundColor(.green)
+                        if testing { ProgressView() }
+                        else { Image(systemName: "wifi") }
                     }
                 }
-                if case .failure(let err) = testStatus {
-                    Section("Result") {
-                        Text(err).font(.caption).foregroundColor(.red)
-                    }
-                }
-
-                // System Info
-                if !systemInfoText.isEmpty {
-                    Section("Device Info") {
-                        Text(systemInfoText)
-                            .font(.system(.caption, design: .monospaced))
-                            .foregroundColor(.cyan)
-                    }
-                }
-
-                // Diagnostic Log
-                if !diagnosticLog.isEmpty {
-                    Section("Log") {
-                        ScrollView {
-                            Text(diagnosticLog)
-                                .font(.system(.caption2, design: .monospaced))
-                                .foregroundColor(.cyan)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        .frame(maxHeight: 180)
-
-                        Button("Clear Log") { diagnosticLog = "" }
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    }
-                }
-
-                // Setup Instructions
-                Section("Setup Guide") {
-                    instructionRow(number: "1", text: "Enable IP control on your Sony TV:\nSettings → Network → Home Network Setup → Remote Device / Renderer → Enable")
-                    instructionRow(number: "2", text: "Set the PSK (optional):\nSettings → Network → Home Network Setup → IP Control → Authentication → Pre-Shared Key\n\nIf this menu doesn't exist, leave PSK empty.")
-                    instructionRow(number: "3", text: "Note your TV's IP address:\nSettings → Network → Network Status → View Network Status")
-                    instructionRow(number: "4", text: "Enter IP above (auto-saves). Tap 'Test REST API', then 'Test IRCC' to verify both work.")
+                .disabled(tvIP.trimmingCharacters(in: .whitespaces).isEmpty || testing)
+                if let result {
+                    Label(result, systemImage: succeeded ? "checkmark.circle" : "exclamationmark.circle")
+                        .font(.footnote)
+                        .foregroundStyle(succeeded ? Color.green : Color.orange)
+                        .textSelection(.enabled)
                 }
             }
-            .scrollContentBackground(.hidden)
-            .foregroundColor(.white)
+
+            Section("如何連接") {
+                guide("1", "查看電視 IP", "在電視的網路設定中，找到目前的 IP 位址。")
+                guide("2", "啟用遠端控制", "在家用網路或 IP 控制設定中允許遠端裝置控制。選單名稱依型號而異。")
+                guide("3", "設定連線金鑰", "若電視提供預先共用金鑰（PSK），請在這裡填入相同金鑰。部分機型使用其他認證方式，需另外適配。")
+            }
+
+            Section {
+                Button("測試首頁按鍵", systemImage: "tv") {
+                    Task { await testConnection(sendHome: true) }
+                }
+                .disabled(tvIP.trimmingCharacters(in: .whitespaces).isEmpty || testing)
+            } footer: {
+                Text("會傳送一次首頁指令，讓你確認電視是否有反應。待機喚醒能力依電視型號與遠端啟動設定而異。")
+            }
         }
-        .navigationTitle("Settings")
+        .scrollContentBackground(.hidden)
+        .background(RemoteTheme.background)
+        .navigationTitle("連線設定")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear { applySettings() }
     }
 
-    // MARK: - Helpers
-
-    func applySettings() {
-        Task {
-            await SonyTVService.shared.configure(
-                ip: tvIP.trimmingCharacters(in: .whitespacesAndNewlines),
-                psk: tvPSK.trimmingCharacters(in: .whitespacesAndNewlines)
-            )
-        }
-    }
-
-    func testRESTAPI() async {
-        testStatus = .testing
-        applySettings()
-        log("Testing REST at http://\(tvIP)/sony/system")
-        log("PSK: \(tvPSK.isEmpty ? "(none)" : "set (\(tvPSK.count) chars)")")
+    private func testConnection(sendHome: Bool) async {
+        testing = true
+        result = nil
+        defer { testing = false }
+        await vm.loadSettings()
         do {
-            let info = try await SonyTVService.shared.getSystemInfo()
-            let product = info["product"] as? String ?? "Sony TV"
-            let model   = info["model"] as? String ?? ""
-            let serial  = info["serial"] as? String ?? "N/A"
-            systemInfoText = "Product: \(product)\nModel: \(model)\nSerial: \(serial)"
-            testStatus = .success("✅ Connected: \(product) \(model)")
-            log("✅ REST OK: \(product) \(model)")
-        } catch {
-            testStatus = .failure(error.localizedDescription)
-            log("❌ REST failed: \(error.localizedDescription)")
-        }
-    }
-
-    func testIRCC() async {
-        testStatus = .testing
-        applySettings()
-        log("Testing IRCC (will try /sony/IRCC → /sony/ircc → /IRCC)")
-        log("Sending Home button...")
-        do {
-            try await SonyTVService.shared.sendIRCC(.home)
-            testStatus = .success("✅ IRCC OK — TV should have reacted!")
-            log("✅ IRCC success — working path cached for all buttons")
-        } catch {
-            testStatus = .failure(error.localizedDescription)
-            log("❌ All IRCC paths failed: \(error.localizedDescription)")
-            log("💡 Make sure IP control is enabled: TV Settings → Network → Home Network Setup → Remote Device → Enable")
-        }
-    }
-
-    func log(_ msg: String) {
-        let time = DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)
-        diagnosticLog += "[\(time)] \(msg)\n"
-    }
-
-    var testStatusView: some View {
-        Group {
-            switch testStatus {
-            case .idle:    Image(systemName: "chevron.right").foregroundColor(.gray)
-            case .testing: ProgressView()
-            case .success: Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
-            case .failure: Image(systemName: "xmark.circle.fill").foregroundColor(.red)
+            if sendHome {
+                await SonyTVService.shared.syncRemoteCodes()
+                try await SonyTVService.shared.sendIRCC(.home)
+                result = "首頁指令已傳送，請確認電視是否有反應。"
+            } else {
+                let on = try await SonyTVService.shared.getPowerStatus()
+                result = on ? "已連接電視，可以開始使用。" : "已連接，電視目前在待機中。"
             }
+            succeeded = true
+            await vm.refreshStatus()
+        } catch {
+            succeeded = false
+            result = error.localizedDescription
         }
     }
 
-    func instructionRow(number: String, text: String) -> some View {
+    private func guide(_ number: String, _ title: String, _ detail: String) -> some View {
         HStack(alignment: .top, spacing: 12) {
             Text(number)
-                .font(.system(size: 13, weight: .bold))
-                .foregroundColor(.white)
-                .frame(width: 22, height: 22)
-                .background(Circle().fill(Color.blue))
-            Text(text)
-                .font(.caption)
-                .foregroundColor(.gray)
-                .fixedSize(horizontal: false, vertical: true)
+                .font(.footnote.weight(.medium))
+                .frame(width: 24, height: 24)
+                .background(RemoteTheme.surface, in: Circle())
+            VStack(alignment: .leading, spacing: 5) {
+                Text(title).font(.subheadline.weight(.medium))
+                Text(detail).font(.footnote).foregroundStyle(.secondary)
+            }
+            .padding(.vertical, 4)
         }
-        .listRowBackground(Color.white.opacity(0.05))
     }
 }

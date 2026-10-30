@@ -1,6 +1,4 @@
 import Foundation
-
-import Foundation
 import OSLog
 
 enum TVError: LocalizedError {
@@ -12,14 +10,14 @@ enum TVError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .notConfigured:
-            return "TV IP not configured. Go to Settings."
+            return "尚未設定電視 IP，請先開啟連線設定。"
         case .networkError(let msg):
-            return "Network error: \(msg)"
+            return "無法連接電視：\(msg)"
         case .httpError(let code, let body):
             switch code {
-            case 401: return "HTTP 401 – Auth failed. Check your PSK, or try leaving PSK empty."
-            case 403: return "HTTP 403 – Forbidden. Enable IP control in TV Settings → Network."
-            case 404: return "HTTP 404 – Endpoint not found. Check TV IP address."
+            case 401: return "連線金鑰不正確，請檢查電視的 PSK 與認證設定。"
+            case 403: return "電視拒絕控制，請確認已啟用 IP 遠端控制。"
+            case 404: return "找不到遙控介面，請確認電視 IP 與機型支援。"
             case 500: return "HTTP 500 – TV internal error. \(body.prefix(80))"
             default:  return "HTTP \(code). \(body.prefix(80))"
             }
@@ -37,6 +35,7 @@ actor SonyTVService {
     private var tvIP: String = ""
     private var psk: String = ""
     private var session: URLSession
+    private let defaults: UserDefaults
     private var irccPath: String? = nil              // cached once discovered
     private var appLaunchSupported: Bool = true     // set false if TV returns error 12
     private var tvRemoteCodes: [String: String] = [:] // codes fetched from TV via getRemoteControllerInfo
@@ -54,25 +53,30 @@ actor SonyTVService {
         }
     }
 
-    init() {
+    init(session: URLSession? = nil, defaults: UserDefaults = .standard) {
+        self.defaults = defaults
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 8
         config.timeoutIntervalForResource = 15
-        self.session = URLSession(configuration: config)
+        self.session = session ?? URLSession(configuration: config)
         // Load saved settings immediately
-        self.tvIP = (UserDefaults.standard.string(forKey: "tv_ip") ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        self.psk  = (UserDefaults.standard.string(forKey: "tv_psk") ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        self.tvIP = (defaults.string(forKey: "tv_ip") ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        self.psk  = (defaults.string(forKey: "tv_psk") ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     func configure(ip: String, psk: String) {
-        self.tvIP = ip.trimmingCharacters(in: .whitespacesAndNewlines)
-        self.psk  = psk.trimmingCharacters(in: .whitespacesAndNewlines)
-        self.irccPath = nil  // reset so it re-discovers on next send
+        let nextIP = ip.trimmingCharacters(in: .whitespacesAndNewlines)
+        let nextPSK = psk.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard nextIP != tvIP || nextPSK != self.psk else { return }
+        self.tvIP = nextIP
+        self.psk = nextPSK
+        self.irccPath = nil
+        self.tvRemoteCodes = [:]
+        self.appLaunchSupported = true
     }
 
     private func reloadFromUserDefaults() {
-        self.tvIP = (UserDefaults.standard.string(forKey: "tv_ip") ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        self.psk  = (UserDefaults.standard.string(forKey: "tv_psk") ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        configure(ip: defaults.string(forKey: "tv_ip") ?? "", psk: defaults.string(forKey: "tv_psk") ?? "")
     }
 
     // MARK: - IRCC Command
@@ -234,7 +238,7 @@ actor SonyTVService {
            let status = results.first?["status"] as? String {
             return status == "active"
         }
-        return false
+        throw TVError.invalidResponse("Missing power status")
     }
 
     func setPowerStatus(on: Bool) async throws {
@@ -352,8 +356,13 @@ actor SonyTVService {
 
     func getRemoteControllerInfo() async throws -> [(name: String, code: String)] {
         let result = try await restRequest(service: "system", method: "getRemoteControllerInfo")
-        guard let results = result["result"] as? [[[String: Any]]] else { return [] }
-        return results.flatMap { $0 }.compactMap { item in
+        return Self.remoteCodes(from: result)
+    }
+
+    // Sony returns [metadataObject, commandArray], not an array of command arrays.
+    nonisolated static func remoteCodes(from response: [String: Any]) -> [(name: String, code: String)] {
+        guard let results = response["result"] as? [Any] else { return [] }
+        return results.compactMap { $0 as? [[String: Any]] }.flatMap { $0 }.compactMap { item in
             guard let name = item["name"] as? String,
                   let value = item["value"] as? String else { return nil }
             return (name: name, code: value)

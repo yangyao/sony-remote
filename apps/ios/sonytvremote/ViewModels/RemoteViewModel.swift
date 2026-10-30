@@ -5,6 +5,20 @@ import OSLog
 @MainActor
 class RemoteViewModel: ObservableObject {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.app", category: "RemoteViewModel")
+    enum ConnectionState { case connecting, connected, standby, disconnected }
+    @Published var connectionState: ConnectionState = .disconnected
+    var connectionLabel: String {
+        switch connectionState {
+        case .connecting: return "連線中…"
+        case .connected: return "已連線"
+        case .standby: return "待機中"
+        case .disconnected: return "未連線"
+        }
+    }
+    private var refreshing = false
+    private var commandGeneration = 0
+    private var commandTask: Task<Void, Never>?
+    private var errorTask: Task<Void, Never>?
     @Published var isOn: Bool = false
     @Published var volume: Int = 0
     @Published var maxVolume: Int = 100
@@ -39,7 +53,8 @@ class RemoteViewModel: ObservableObject {
             }
         }
         Task {
-            await service.syncRemoteCodes() // fetch TV's actual IRCC codes once
+            guard !(UserDefaults.standard.string(forKey: "tv_ip") ?? "").isEmpty else { return }
+            await service.syncRemoteCodes()
             await refreshStatus()
         }
     }
@@ -53,12 +68,21 @@ class RemoteViewModel: ObservableObject {
     // MARK: - Status
 
     func refreshStatus() async {
+        guard !refreshing else { return }
+        guard !(UserDefaults.standard.string(forKey: "tv_ip") ?? "").isEmpty else {
+            connectionState = .disconnected
+            return
+        }
+        refreshing = true
+        defer { refreshing = false }
+        if connectionState == .disconnected { connectionState = .connecting }
         logger.debug("Refreshing TV status")
         do {
             isOn = try await service.getPowerStatus()
+            connectionState = isOn ? .connected : .standby
             logger.info("Power status: \(self.isOn ? "ON" : "OFF", privacy: .public)")
             if isOn {
-                let volInfos = try await service.getVolumeInfo()
+                let volInfos = (try? await service.getVolumeInfo()) ?? []
                 if let speaker = volInfos.first(where: { $0.target == "speaker" }) ?? volInfos.first {
                     volume = speaker.volume
                     maxVolume = speaker.maxVolume
@@ -68,7 +92,8 @@ class RemoteViewModel: ObservableObject {
             }
         } catch {
             logger.error("Failed to refresh status: \(error.localizedDescription, privacy: .public)")
-            // Silent fail for polling
+            connectionState = .disconnected
+            // A network failure is not evidence that the TV is in standby.
         }
     }
 
@@ -107,14 +132,20 @@ class RemoteViewModel: ObservableObject {
     // MARK: - IRCC Commands
 
     func sendCommand(_ command: IRCCCommand) async {
-        logger.info("Sending IRCC command: \(String(describing: command), privacy: .public)")
-        do {
-            try await service.sendIRCC(command)
-            logger.debug("IRCC command sent successfully")
-        } catch {
-            logger.error("IRCC command failed: \(error.localizedDescription, privacy: .public)")
-            showError(error)
+        let previous = commandTask
+        let generation = commandGeneration
+        let next = Task { @MainActor in
+            await previous?.value
+            guard !Task.isCancelled, generation == commandGeneration else { return }
+            do {
+                try await service.sendIRCC(command)
+            } catch {
+                commandGeneration += 1 // Drop queued gestures after a failed request.
+                showError(error)
+            }
         }
+        commandTask = next
+        await next.value
     }
 
     // MARK: - Volume
@@ -141,15 +172,12 @@ class RemoteViewModel: ObservableObject {
     }
 
     func toggleMute() async {
-        logger.info("Toggle mute pressed (current: \(self.isMuted ? "muted" : "unmuted", privacy: .public))")
+        // IRCC toggle remains usable on models that cannot report volume state.
         do {
+            try await service.sendIRCC(.mute)
             isMuted.toggle()
-            try await service.setMute(mute: isMuted)
-        } catch {
-            logger.error("Toggle mute failed: \(error.localizedDescription, privacy: .public)")
-            isMuted.toggle()
-            showError(error)
-        }
+            await refreshStatus()
+        } catch { showError(error) }
     }
 
     // MARK: - Apps
@@ -225,10 +253,16 @@ class RemoteViewModel: ObservableObject {
 
     private func showError(_ error: Error) {
         logger.error("Showing error to user: \(error.localizedDescription, privacy: .public)")
-        errorMessage = error.localizedDescription
-        Task {
-            try? await Task.sleep(nanoseconds: 3_000_000_000)
-            await MainActor.run { self.errorMessage = nil }
+        errorTask?.cancel()
+        if case TVError.notConfigured = error {
+            errorMessage = "請點上方電視名稱，設定電視 IP 與連線金鑰。"
+        } else {
+            errorMessage = error.localizedDescription
+        }
+        errorTask = Task {
+            do { try await Task.sleep(for: .seconds(5)) }
+            catch { return }
+            self.errorMessage = nil
         }
     }
 }

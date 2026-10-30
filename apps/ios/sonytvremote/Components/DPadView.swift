@@ -1,82 +1,67 @@
 import SwiftUI
 
 struct DPadView: View {
-    let onUp: () async -> Void
-    let onDown: () async -> Void
-    let onLeft: () async -> Void
-    let onRight: () async -> Void
-    let onOK: () async -> Void
-
-    private let dpadSize: CGFloat = 200
-    private let centerSize: CGFloat = 64
-    private let arrowSize: CGFloat = 52
+    let size: CGFloat
+    let send: (IRCCCommand) async -> Void
+    @State private var lastTranslation: CGSize = .zero
+    @State private var swipeTask: Task<Void, Never>?
 
     var body: some View {
         ZStack {
-            // D-Pad background ring
             Circle()
-                .fill(Color(white: 0.18))
-                .frame(width: dpadSize, height: dpadSize)
-
-            // OK center
-            Button { Task { await onOK() } } label: {
-                ZStack {
-                    Circle()
-                        .fill(Color(white: 0.3))
-                        .frame(width: centerSize, height: centerSize)
-                    Text("OK")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.white)
-                }
+                .fill(RemoteTheme.surface)
+                .overlay(Circle().strokeBorder(.white.opacity(0.07), lineWidth: 1))
+            ForEach(0..<4) { index in
+                let command: IRCCCommand = [.up, .right, .down, .left][index]
+                let label = ["向上", "向右", "向下", "向左"][index]
+                HoldRemoteKey(icon: "circle.fill", label: label, size: 56,
+                              showsBackground: false, fontSize: 5) { await send(command) }
+                    .foregroundStyle(RemoteTheme.secondary)
+                    .offset(x: offset(index).width, y: offset(index).height)
+            }
+            Button {
+                RemoteTheme.feedback()
+                Task { await send(.confirm) }
+            } label: {
+                Circle().fill(RemoteTheme.center)
+                    .frame(width: size * 0.40, height: size * 0.40)
+                    .contentShape(Circle())
             }
             .buttonStyle(ScaleButtonStyle())
-
-            // Up
-            VStack {
-                arrowButton(icon: "chevron.up", action: onUp)
-                Spacer()
-            }
-            .frame(height: dpadSize)
-
-            // Down
-            VStack {
-                Spacer()
-                arrowButton(icon: "chevron.down", action: onDown)
-            }
-            .frame(height: dpadSize)
-
-            // Left
-            HStack {
-                arrowButton(icon: "chevron.left", action: onLeft)
-                Spacer()
-            }
-            .frame(width: dpadSize)
-
-            // Right
-            HStack {
-                Spacer()
-                arrowButton(icon: "chevron.right", action: onRight)
-            }
-            .frame(width: dpadSize)
+            .accessibilityLabel("確認")
+            .accessibilityIdentifier("確認")
         }
-        .frame(width: dpadSize, height: dpadSize)
+        .frame(width: size, height: size)
+        .contentShape(Circle())
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 24)
+                .onChanged { value in
+                    let dx = value.translation.width - lastTranslation.width
+                    let dy = value.translation.height - lastTranslation.height
+                    guard max(abs(dx), abs(dy)) >= 32 else { return }
+                    lastTranslation = value.translation
+                    let command: IRCCCommand = abs(dx) > abs(dy)
+                        ? (dx > 0 ? .right : .left) : (dy > 0 ? .down : .up)
+                    // Keep swipe commands ordered instead of opening parallel HTTP requests.
+                    let previous = swipeTask
+                    swipeTask = Task {
+                        await previous?.value
+                        guard !Task.isCancelled else { return }
+                        await send(command)
+                    }
+                    RemoteTheme.feedback()
+                }
+                .onEnded { _ in lastTranslation = .zero }
+        )
+        .onDisappear { swipeTask?.cancel() }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("導航觸控區")
+        .accessibilityHint("滑動導覽，點按中央確認；按住方向圓點可連續移動")
     }
 
-    private func arrowButton(icon: String, action: @escaping () async -> Void) -> some View {
-        Button { Task { await action() } } label: {
-            Image(systemName: icon)
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundColor(.white)
-                .frame(width: arrowSize, height: arrowSize)
-        }
-        .buttonStyle(ScaleButtonStyle())
-    }
-}
-
-struct ScaleButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.85 : 1.0)
-            .animation(.spring(response: 0.15, dampingFraction: 0.7), value: configuration.isPressed)
+    private func offset(_ index: Int) -> CGSize {
+        let distance = size * 0.39
+        return [CGSize(width: 0, height: -distance), CGSize(width: distance, height: 0),
+                CGSize(width: 0, height: distance), CGSize(width: -distance, height: 0)][index]
     }
 }

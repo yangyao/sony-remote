@@ -76,7 +76,7 @@ enum IRCCCommand: String, CaseIterable {
     case prime          = "AAAAAgAAAMQAAAB5Aw=="
 
     // Maps to the command name returned by getRemoteControllerInfo
-    var tvName: String {
+    nonisolated var tvName: String {
         switch self {
         case .power:        return "Power"
         case .powerOff:     return "PowerOff"

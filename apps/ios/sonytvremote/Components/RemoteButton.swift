@@ -1,85 +1,101 @@
 import SwiftUI
+import UIKit
 
-struct RemoteButton: View {
-    let icon: String
-    let label: String?
-    let color: Color
-    let size: CGFloat
-    let action: () async -> Void
+enum RemoteTheme {
+    static let background = Color(red: 0.15, green: 0.12, blue: 0.18)
+    static let surface = Color(red: 0.21, green: 0.18, blue: 0.24)
+    static let center = Color(red: 0.29, green: 0.25, blue: 0.32)
+    static let secondary = Color(red: 0.65, green: 0.61, blue: 0.68)
 
-    @State private var isPressed = false
-
-    init(icon: String, label: String? = nil, color: Color = .white, size: CGFloat = 52, action: @escaping () async -> Void) {
-        self.icon = icon
-        self.label = label
-        self.color = color
-        self.size = size
-        self.action = action
+    @MainActor static func feedback() {
+        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
     }
+}
+
+struct RemoteKey: View {
+    let icon: String
+    let label: String
+    var size: CGFloat = 76
+    var tint: Color = .white
+    let action: () async -> Void
 
     var body: some View {
         Button {
+            RemoteTheme.feedback()
             Task { await action() }
         } label: {
-            VStack(spacing: 3) {
-                Image(systemName: icon)
-                    .font(.system(size: size * 0.38, weight: .medium))
-                if let label {
-                    Text(label)
-                        .font(.system(size: 9, weight: .medium))
-                        .lineLimit(1)
-                }
-            }
-            .foregroundColor(color)
-            .frame(width: size, height: label != nil ? size + 8 : size)
-            .background(
-                Circle()
-                    .fill(Color.white.opacity(isPressed ? 0.25 : 0.1))
-                    .frame(width: size, height: size)
-            )
+            Image(systemName: icon)
+                .font(.system(size: size * 0.35, weight: .medium))
+                .foregroundStyle(tint)
+                .frame(width: size, height: size)
+                .background(RemoteTheme.surface, in: Circle())
+                .contentShape(Circle())
         }
-        .buttonStyle(PressedButtonStyle(isPressed: $isPressed))
+        .buttonStyle(ScaleButtonStyle())
+        .accessibilityLabel(label)
+        .accessibilityIdentifier(label)
     }
 }
 
-struct TextRemoteButton: View {
-    let text: String
-    let color: Color
-    let size: CGFloat
+/// Standard button semantics, with serial, cancellable repeat while held.
+struct HoldRemoteKey: View {
+    let icon: String
+    let label: String
+    var size: CGFloat = 76
+    var showsBackground = true
+    var fontSize: CGFloat = 28
     let action: () async -> Void
-    @State private var isPressed = false
-
-    init(text: String, color: Color = .white, size: CGFloat = 52, action: @escaping () async -> Void) {
-        self.text = text
-        self.color = color
-        self.size = size
-        self.action = action
-    }
+    @State private var repeatTask: Task<Void, Never>?
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        Button { Task { await action() } } label: {
-            Text(text)
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundColor(color)
+        Button {} label: {
+            Image(systemName: icon)
+                .font(.system(size: fontSize, weight: .medium))
                 .frame(width: size, height: size)
-                .background(
-                    Circle()
-                        .fill(Color.white.opacity(isPressed ? 0.25 : 0.1))
-                )
+                .background(showsBackground ? RemoteTheme.surface : .clear, in: Circle())
+                .contentShape(Circle())
         }
-        .buttonStyle(PressedButtonStyle(isPressed: $isPressed))
+        .buttonStyle(HoldPressStyle { pressed in
+            repeatTask?.cancel()
+            guard pressed else { return }
+            RemoteTheme.feedback()
+            repeatTask = Task { @MainActor in
+                await action()
+                do {
+                    try await Task.sleep(for: .milliseconds(450))
+                    while !Task.isCancelled {
+                        await action()
+                        try await Task.sleep(for: .milliseconds(160))
+                    }
+                } catch { /* Finger lifted, view dismissed, or app backgrounded. */ }
+            }
+        })
+        .accessibilityLabel(label)
+        .accessibilityIdentifier(label)
+        .accessibilityHint("按住連續調整")
+        .accessibilityAction { Task { await action() } }
+        .onDisappear { repeatTask?.cancel() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { repeatTask?.cancel() }
+        }
     }
 }
 
-struct PressedButtonStyle: ButtonStyle {
-    @Binding var isPressed: Bool
-
+private struct HoldPressStyle: ButtonStyle {
+    let changed: (Bool) -> Void
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.90 : 1.0)
-            .onChange(of: configuration.isPressed) { _, newValue in
-                isPressed = newValue
-            }
-            .animation(.spring(response: 0.15, dampingFraction: 0.7), value: configuration.isPressed)
+            .opacity(configuration.isPressed ? 0.55 : 1)
+            .onChange(of: configuration.isPressed) { _, pressed in changed(pressed) }
+    }
+}
+
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.94 : 1)
+            .opacity(configuration.isPressed ? 0.65 : 1)
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }

@@ -7,19 +7,19 @@ struct AppsView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 0.06, green: 0.06, blue: 0.10).ignoresSafeArea()
+            RemoteTheme.background.ignoresSafeArea()
 
             if vm.isLoading {
-                ProgressView("Loading apps...")
+                ProgressView("正在讀取應用程式…")
                     .foregroundColor(.white)
             } else if vm.apps.isEmpty {
                 VStack(spacing: 16) {
                     Image(systemName: "square.grid.2x2.fill")
                         .font(.system(size: 50))
                         .foregroundColor(.gray)
-                    Text("No apps found")
+                    Text("尚未取得應用程式")
                         .foregroundColor(.gray)
-                    Button("Refresh") { Task { await vm.loadApps() } }
+                    Button("重新讀取") { Task { await vm.loadApps() } }
                         .buttonStyle(.bordered)
                         .tint(.blue)
                 }
@@ -50,7 +50,7 @@ struct AppsView: View {
                 }
             }
         }
-        .navigationTitle("Apps")
+        .navigationTitle("應用程式")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

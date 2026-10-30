@@ -5,19 +5,19 @@ struct InputsView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 0.06, green: 0.06, blue: 0.10).ignoresSafeArea()
+            RemoteTheme.background.ignoresSafeArea()
 
             if vm.isLoading {
-                ProgressView("Loading inputs...")
+                ProgressView("正在讀取輸入源…")
                     .foregroundColor(.white)
             } else if vm.inputs.isEmpty {
                 VStack(spacing: 16) {
                     Image(systemName: "display")
                         .font(.system(size: 50))
                         .foregroundColor(.gray)
-                    Text("No inputs found")
+                    Text("尚未取得輸入源")
                         .foregroundColor(.gray)
-                    Button("Refresh") { Task { await vm.loadInputs() } }
+                    Button("重新讀取") { Task { await vm.loadInputs() } }
                         .buttonStyle(.bordered)
                         .tint(.blue)
                 }
@@ -32,7 +32,7 @@ struct InputsView: View {
                 .scrollContentBackground(.hidden)
             }
         }
-        .navigationTitle("Inputs")
+        .navigationTitle("輸入源")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
