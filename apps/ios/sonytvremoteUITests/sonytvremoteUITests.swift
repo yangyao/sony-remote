@@ -12,6 +12,12 @@ final class RemoteUITests: XCTestCase {
         XCTAssertTrue(app.buttons["降低電視音量"].exists)
         XCTAssertTrue(app.buttons["確認"].exists)
         XCTAssertFalse(app.tabBars.firstMatch.exists)
+        XCTAssertFalse(app.buttons["應用程式"].exists)
+        XCTAssertFalse(app.buttons["輸入源"].exists)
+        XCTAssertFalse(app.buttons["更多"].exists)
+        XCTAssertFalse(app.staticTexts["SONY REMOTE"].exists)
+        XCTAssertFalse(app.staticTexts["待機中"].exists)
+        XCTAssertTrue(app.buttons["電源"].exists)
         capture("iphone-remote", app)
 
         app.buttons["電視連線設定"].tap()
@@ -26,16 +32,6 @@ final class RemoteUITests: XCTestCase {
         app.buttons["暫停"].tap()
         if app.buttons["關閉提示"].waitForExistence(timeout: 3) { app.buttons["關閉提示"].tap() }
 
-        app.buttons["更多"].tap()
-        XCTAssertTrue(app.staticTexts["更多控制"].waitForExistence(timeout: 5))
-        // Lazy rows are only materialized once scrolled into view.
-        app.swipeUp()
-        // Regression: the original number pad omitted the 1 key.
-        XCTAssertTrue(app.buttons["1"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["9"].exists)
-        capture("iphone-more", app)
-        app.buttons["完成"].tap()
-        XCTAssertTrue(app.buttons["確認"].waitForExistence(timeout: 5))
     }
 
     @MainActor

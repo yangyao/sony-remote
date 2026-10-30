@@ -8,15 +8,15 @@
 - 圓形導航區：滑動方向、點按確認、按住方向圓點連續移動。
 - 返回、首頁、播放／暫停入口、靜音。
 - 直向電視音量加減，按住可連續調整；控制電視，不控制手機音量。
-- 電源、App 清單、輸入源與更多按鍵面板。
+- 電源鍵直接以顏色顯示狀態：綠色開機、橙色待機、灰色未連線；連線中顯示轉圈。
 - 預設電視 IP 為 `192.0.2.1`，開啟即自動連線；設定只保留 IP 與「連接」，PSK 收進進階設定。
-- 無「正在播放」卡片，無廣告或分析 SDK。
+- 無底部功能入口、重複標題、狀態文字或「正在播放」卡片；無廣告或分析 SDK。
 
 Sony 部分機型沒有通用的播放／暫停切換指令，因此主畫面的播放按鍵開啟選單，明確選擇播放或暫停。
 
 ## 畫面
 
-[主畫面](docs/screenshots/iphone-remote.png) · [設定](docs/screenshots/iphone-settings.png) · [更多控制](docs/screenshots/iphone-more.png) · [玻璃效果更新前後](docs/screenshots/glass-before-after.png)
+[主畫面](docs/screenshots/iphone-remote.png) · [設定](docs/screenshots/iphone-settings.png) · [玻璃效果更新前後](docs/screenshots/glass-before-after.png)
 
 視覺檢查與驗證範圍見 [design-qa.md](design-qa.md)。
 
@@ -31,6 +31,8 @@ iOS 26+ 使用 SwiftUI 原生 Liquid Glass；iOS 17–18 使用系統半透明�
 5. 若要更改地址，點上方電視名稱，修改 IP 並點「連接」；需要 PSK 時再展開「進階設定」。
 
 已從預設地址讀到電視待機狀態；實體遙控按鍵尚待驗證。PSK 認證及各按鍵支援程度依型號而異；需要 PIN 配對的機型尚未實作配對流程。待機喚醒亦需依機型另行驗證，現階段沒有實作 Wake-on-LAN。
+
+文字輸入不會自動喚起 iPhone 鍵盤；偶爾輸入時可用方向鍵操作電視的螢幕鍵盤，或使用實體遙控器。
 
 ## 目錄
 
@@ -52,6 +54,6 @@ xcodebuild -project apps/ios/sonytvremote.xcodeproj \
 ```
 
 通訊測試使用 URLProtocol 模擬 Sony 回應，驗證 PSK、REST／SOAP 格式及電視回報按鍵碼。
-UI 測試涵蓋主畫面、設定面板、播放選單與更多控制；另驗證預設 IP、簡化設定及移除教學／測試按鈕。
+UI 測試涵蓋主畫面、設定面板與播放選單；另驗證底部三個入口／重複標題／狀態文字已移除，以及預設 IP 和精簡設定。
 
 上游程式依 Apache-2.0 授權，詳見 `apps/ios/LICENSE`；來源與修改見 `docs/upstream.md`。

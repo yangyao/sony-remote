@@ -3,13 +3,7 @@ import SwiftUI
 struct RemoteView: View {
     @EnvironmentObject var vm: RemoteViewModel
     @AppStorage("tv_name") private var tvName = "Sony BRAVIA"
-    @AppStorage("tv_ip") private var tvIP = TVConnectionSettings.defaultIP
-    @State private var sheet: RemoteSheet?
-
-    private enum RemoteSheet: String, Identifiable {
-        case settings, apps, inputs, more
-        var id: String { rawValue }
-    }
+    @State private var showSettings = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -23,7 +17,6 @@ struct RemoteView: View {
                     RemoteGlassGroup { controls(keySize: keySize) }
                         .padding(.top, 28)
                     Spacer(minLength: 16)
-                    footer
                 }
                 .frame(maxWidth: 380)
                 .padding(.horizontal, 28)
@@ -49,25 +42,18 @@ struct RemoteView: View {
                 .padding(.bottom, 8)
             }
         }
-        .sheet(item: $sheet, onDismiss: {
+        .sheet(isPresented: $showSettings, onDismiss: {
             Task { await vm.loadSettings(); await vm.refreshStatus() }
-        }) { destination in
+        }) {
             NavigationStack {
-                Group {
-                    switch destination {
-                    case .settings: SettingsView()
-                    case .apps: AppsView()
-                    case .inputs: InputsView()
-                    case .more: moreControls
-                    }
-                }
-                .toolbar(.hidden, for: .navigationBar)
+                SettingsView()
+                    .toolbar(.hidden, for: .navigationBar)
             }
             .safeAreaInset(edge: .top, spacing: 0) {
                 HStack {
-                    Text(sheetTitle(destination)).font(.headline)
+                    Text("連線設定").font(.headline)
                     Spacer()
-                    Button("完成") { sheet = nil }
+                    Button("完成") { showSettings = false }
                         .font(.body.weight(.semibold))
                         .frame(minWidth: 44, minHeight: 44)
                 }
@@ -78,60 +64,58 @@ struct RemoteView: View {
             .environmentObject(vm)
             .preferredColorScheme(.dark)
             .tint(.white)
-            .presentationDetents(destination == .settings ? [.height(320), .large] : [.large])
+            .presentationDetents([.height(320), .large])
             .presentationDragIndicator(.visible)
-        }
-    }
-
-    private func sheetTitle(_ destination: RemoteSheet) -> String {
-        switch destination {
-        case .settings: return "連線設定"
-        case .apps: return "應用程式"
-        case .inputs: return "輸入源"
-        case .more: return "更多控制"
         }
     }
 
     private var header: some View {
         HStack(spacing: 12) {
-            Button { sheet = .settings } label: {
-                VStack(alignment: .leading, spacing: 7) {
-                    Text("SONY REMOTE")
-                        .font(.system(size: 10, weight: .semibold))
-                        .tracking(2.3)
+            Button { showSettings = true } label: {
+                HStack(spacing: 7) {
+                    Text(tvName.isEmpty ? "Sony BRAVIA" : tvName)
+                        .font(.system(size: 21, weight: .semibold))
+                        .lineLimit(1).minimumScaleFactor(0.7)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(RemoteTheme.secondary)
-                    HStack(spacing: 7) {
-                        Text(tvName.isEmpty ? "Sony BRAVIA" : tvName)
-                            .font(.system(size: 21, weight: .semibold))
-                            .lineLimit(1).minimumScaleFactor(0.7)
-                        Image(systemName: "chevron.down")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(RemoteTheme.secondary)
-                    }
-                    HStack(spacing: 5) {
-                        Circle().fill(statusColor).frame(width: 5, height: 5)
-                        Text(tvIP.isEmpty ? "點此連接電視" : vm.connectionLabel)
-                            .font(.system(size: 11))
-                            .foregroundStyle(RemoteTheme.secondary)
-                    }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity, minHeight: 46, alignment: .leading)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("電視連線設定")
-            RemoteKey(icon: "power", label: "電源", size: 46) {
-                await vm.togglePower()
+
+            Button {
+                RemoteTheme.feedback()
+                Task { await vm.togglePower() }
+            } label: {
+                ZStack {
+                    if vm.connectionState == .connecting {
+                        ProgressView().tint(.white)
+                    } else {
+                        Image(systemName: "power")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundStyle(powerColor)
+                    }
+                }
+                .frame(width: 46, height: 46)
+                .remoteGlass(in: Circle())
+                .contentShape(Circle())
             }
+            .buttonStyle(ScaleButtonStyle())
+            .accessibilityLabel("電源")
+            .accessibilityIdentifier("電源")
+            .accessibilityValue(vm.connectionLabel)
+            .accessibilityHint("開機為綠色，待機為橙色，未連線為灰色")
         }
     }
 
-    private var statusColor: Color {
-        if tvIP.isEmpty { return RemoteTheme.secondary }
+    private var powerColor: Color {
         switch vm.connectionState {
         case .connected: return .green
         case .standby: return .orange
-        case .connecting: return .yellow
+        case .connecting: return .white
         case .disconnected: return RemoteTheme.secondary
         }
     }
@@ -173,70 +157,6 @@ struct RemoteView: View {
         }
     }
 
-    private var footer: some View {
-        HStack(spacing: 0) {
-            footerButton("square.grid.2x2", "應用程式", .apps)
-            Spacer()
-            footerButton("rectangle.on.rectangle", "輸入源", .inputs)
-            Spacer()
-            footerButton("ellipsis", "更多", .more)
-        }
-        .padding(.horizontal, 6)
-    }
-
-    private func footerButton(_ icon: String, _ label: String, _ destination: RemoteSheet) -> some View {
-        Button { sheet = destination } label: {
-            Label(label, systemImage: icon)
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(RemoteTheme.secondary)
-                .frame(minHeight: 44)
-        }
-        .accessibilityIdentifier(label)
-    }
-
-    private var moreControls: some View {
-        List {
-            Section("電視") {
-                commandRow("選單", "line.3.horizontal", .options)
-                commandRow("節目資訊", "info.circle", .info)
-                commandRow("切換輸入源", "rectangle.on.rectangle", .input)
-                commandRow("頻道 +", "chevron.up", .channelUp)
-                commandRow("頻道 −", "chevron.down", .channelDown)
-            }
-            Section("播放") {
-                commandRow("倒轉", "backward.fill", .rewind)
-                commandRow("快轉", "forward.fill", .fastForward)
-                commandRow("停止", "stop.fill", .stop)
-                commandRow("字幕", "captions.bubble", .subtitle)
-            }
-            Section("數字鍵") {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 12) {
-                    ForEach(1...9, id: \.self) { number in numberKey(number) }
-                    Color.clear.frame(height: 44)
-                    numberKey(0)
-                }
-                .padding(.vertical, 8)
-            }
-            Section { Button("連線設定", systemImage: "gearshape") { sheet = .settings } }
-        }
-        .navigationTitle("更多控制")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func commandRow(_ title: String, _ icon: String, _ command: IRCCCommand) -> some View {
-        Button(title, systemImage: icon) { Task { await vm.sendCommand(command) } }
-    }
-
-    private func numberKey(_ number: Int) -> some View {
-        Button {
-            let commands: [IRCCCommand] = [.num0, .num1, .num2, .num3, .num4, .num5, .num6, .num7, .num8, .num9]
-            Task { await vm.sendCommand(commands[number]) }
-        } label: {
-            Text(String(number)).font(.title2).frame(maxWidth: .infinity, minHeight: 48)
-                .background(RemoteTheme.surface, in: RoundedRectangle(cornerRadius: 12))
-        }
-        .buttonStyle(.plain)
-    }
 }
 
 #Preview { RemoteView().environmentObject(RemoteViewModel()) }
