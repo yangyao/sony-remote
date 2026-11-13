@@ -1,5 +1,7 @@
 # Sony Remote
 
+[English](README.en.md) | 简体中文
+
 无广告的原生 Sony BRAVIA 局域网遥控器，支持 iPhone 和 Mac，使用 SwiftUI 与原生 Liquid Glass。
 
 ## 画面
