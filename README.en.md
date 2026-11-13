@@ -68,7 +68,7 @@ Sony's play and pause are separate commands, so the play button offers a Play / 
 
 ```sh
 xcodebuild -project apps/ios/sonytvremote.xcodeproj -scheme sonytvremote \
-  -destination 'platform=iOS Simulator,name=<已安装的模拟器>' \
+  -destination 'platform=iOS Simulator,name=<your installed simulator>' \
   -parallel-testing-enabled NO -collect-test-diagnostics never \
   -only-testing:sonytvremoteTests -only-testing:sonytvremoteUITests/RemoteUITests test
 ```
